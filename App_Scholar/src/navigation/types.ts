@@ -1,9 +1,10 @@
 import { Mode } from '../types/Outros/mode';
 
 export type RootStackParamList = {
+  Home: undefined;
   Tabs: undefined;
 
-  Curso: {};
+  Curso: undefined;
 
   CursoForm: {
     mode: Mode;
@@ -11,7 +12,7 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Aluno: {};
+  Aluno: undefined;
 
   AlunoForm: {
     mode: Mode;
@@ -19,7 +20,7 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Professor: {};
+  Professor: undefined;
 
   ProfessorForm: {
     mode: Mode;
@@ -27,7 +28,7 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Disciplina: {};
+  Disciplina: undefined;
 
   DisciplinaForm: {
     mode: Mode;
@@ -35,7 +36,7 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Boletim: {};
+  Boletim: undefined;
 
   BoletimForm: {
     mode: Mode;
@@ -43,7 +44,7 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Empregadora: {};
+  Empregadora: undefined;
 
   EmpregadoraForm: {
     mode: Mode;
@@ -51,7 +52,7 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Manutencao: {};
+  Manutencao: undefined;
 
   ManutencaoForm: {
     mode: Mode;

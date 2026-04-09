@@ -24,7 +24,6 @@ export function Carteira({
 
   return (
     <View style={styleCarteira.container}>
-      {/* Header */}
       <View style={styleCarteira.header}>
         
 
@@ -39,7 +38,7 @@ export function Carteira({
         )}
       </View>
 
-      {/* Search + Filter */}
+  
       {(searchComponent || filterComponent) && (
         <View style={styleCarteira.actions}>
           {searchComponent}
@@ -47,7 +46,7 @@ export function Carteira({
         </View>
       )}
 
-      {/* Lista */}
+  
       <ScrollView
         contentContainerStyle={styleCarteira.list}
         showsVerticalScrollIndicator={false}

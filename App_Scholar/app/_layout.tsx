@@ -1,27 +1,40 @@
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemeProvider } from '../src/contexts/Theme/themeContext';
-import { useColorScheme } from '../src/hooks/use-color-scheme';
-import { AuthProvider } from '@/src/contexts/Auth/authContext';
+import { StatusBar } from "expo-status-bar";
+import "react-native-reanimated";
+import { View } from "react-native";
+import { ThemeProvider, useTheme } from "../src/contexts/Theme/themeContext";
+import { AuthProvider } from "@/src/contexts/Auth/authContext";
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+function LayoutContent() {
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { theme } = useTheme();
 
   return (
+    <View style={{ flex: 1, backgroundColor: theme.colors.primary }}>
+      
+      <SafeAreaView style={{ backgroundColor: theme.colors.destaque }}>
+        <StatusBar style={theme.mode === "dark" ? "dark" : "light"} translucent />
+      </SafeAreaView>
+
+      <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+         <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <AuthProvider>
-    <ThemeProvider>
-      {/* <Stack> */}
-        {/* <Stack.Screen name="app/(tabs)/_layout" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
-      <Stack />
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      <ThemeProvider>
+        <LayoutContent />
+      </ThemeProvider>
     </AuthProvider>
   );
 }

@@ -1,12 +1,13 @@
-import { Redirect } from 'expo-router';
-import { useAuth } from '../src/hooks/Auth/useAuth';
+// import { Redirect } from 'expo-router';
+// import { useAuth } from '../src/hooks/Auth/useAuth';
 
-export default function Index() {
-  const { user } = useAuth();
+// export default function Index() {
+//   const { user } = useAuth();
 
-  if (!user) {
-    return <Redirect href="/auth/login" />;
-  }
 
-  return <Redirect href="/(tabs)/home" />;
-}
+//   if (!user) {
+//     return <Redirect href="/auth/login" />;
+//   }
+
+//   return <Redirect href="/(tabs)/home" />;
+// }

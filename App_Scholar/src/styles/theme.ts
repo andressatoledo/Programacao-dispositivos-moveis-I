@@ -1,92 +1,92 @@
 export const lightTheme = {
   mode: 'light',
   colors: {
-    background: '#FFFFFF',
-    detail: '#28bd78', //#28bd78,
-    destaque: '#000000ff',
-    opaco: '#777',
-    surface: '#F5F5F5',
-    text: '#1A1A1A',
-    primary: '#E91E63',
-    success: '#4CAF50',
-    error: '#F44336',
-    warning: '#FF9800',
-    activeTab: '#EAF7F1',
+    background: '#FFF5F7', 
+    surface: '#FFFFFF',
+    
+    primary: '#8B1E3F',
+    detail: '#B23A48', 
+    destaque: '#5A0F24', 
+    
+    text: '#2A0E12',
+    opaco: '#8A6B73',
+
+    success: '#2E7D32',
+    error: '#C62828',
+    warning: '#ED6C02',
+
+    activeTab: '#FDECEF',
     inactiveTab: '#9ca3af',
-    backgroundCard: '#1a231f',
-    backgroundCardDestaque: '#28bd7731',
-    space: '#313f38',
-    cardDiesel: '#e7b0081a',
-    cardDieselText: '#cadd23ff',
-    cardFrete: '#279b651a',
-    cardFreteText: '#279b65',
-    cardTonelada: '#d5e3f3a8',
-    cardToneladaText: '#69a2e4ff',
-    cardLucro: '#e7b0081a',
-    cardLucroText: '#cadd23ff',
-    cardPedagio: '#d5e3f3a8',
-    cardPedagioText: '#69a2e4ff',
+
+    backgroundCard: '#faf1f1',
+    backgroundCardDestaque: '#8B1E3F1A',
+    space: '#F3DDE2',
   },
+
   sizes: {
     iconSize: 30,
-    iconSizeCard: 15,
+    iconSizeCard: 16,
     iconSizeValueCard: 18,
+
     header: { fontSize: 56 },
     subHeader: { fontSize: 32 },
     title: { fontSize: 24, fontWeight: '600', marginBottom: 16 },
     subtitle: { fontSize: 20 },
+
     secundario: { fontSize: 18 },
     text: { fontSize: 16 },
     smallText: { fontSize: 14 },
     mediumText: { fontSize: 16 },
     largeText: { fontSize: 22 },
+
     inputHeight: { height: 48 },
     buttonHeight: { height: 48 },
   },
 } as const;
 
+
 export const darkTheme = {
   mode: 'dark',
   colors: {
-    background: '#101613',
-    detail: '#28bd78',
-    destaque: '#FFFFFF',
-    opaco: '#777',
-    surface: '#1E1E1E',
-    text: '#FFFFFF',
-    primary: '#28bd7738',
-    success: '#28bd7738',
-    warning: '#FF9800',
-    error: '#aa1f1c',
-    activeTab: '#28bd77d2',
+    background: '#14080B', // quase preto com vinho
+    surface: '#0a0506',
+
+    primary: '#5A0F24', // vinho mais vivo no dark
+    detail: '#8B1E3F',
+    destaque: '#5A0F24',
+
+    text: '#F5E9EC',
+    opaco: '#A88A91',
+
+    success: '#235025',
+    error: '#EF5350',
+    warning: '#FFA726',
+
+    activeTab: '#8B1E3F',
     inactiveTab: '#9ca3af',
-    backgroundCard: '#1a231f',
-    space: '#313f38',
-    cardDiesel: '#2f311d',
-    cardDieselText: '#f2b90d',
-    cardFrete: '#1b3228',
-    cardFreteText: '#279b65',
-    cardTonelada: '#082149',
-    cardToneladaText: 'rgb(52, 136, 231)',
-    cardLucro: '#2f311d',
-    cardLucroText: '#f2b90d',
-    cardPedagio: '#2f4a59',
-    cardPedagioText: '#0455b3ff',
-    backgroundCardDestaque: '#28bd7738',
+
+    backgroundCard: '#1E0F14',
+    backgroundCardDestaque: '#B23A4833',
+    space: '#2A141A',
+
   },
+
   sizes: {
     iconSize: 30,
-    iconSizeCard: 15,
+    iconSizeCard: 16,
     iconSizeValueCard: 18,
+
     header: { fontSize: 56 },
     subHeader: { fontSize: 32 },
     title: { fontSize: 24, fontWeight: '600', marginBottom: 16 },
     subtitle: { fontSize: 20 },
+
     secundario: { fontSize: 18 },
     text: { fontSize: 16 },
     smallText: { fontSize: 14 },
     mediumText: { fontSize: 16 },
     largeText: { fontSize: 22 },
+
     inputHeight: { height: 48 },
     buttonHeight: { height: 48 },
   },

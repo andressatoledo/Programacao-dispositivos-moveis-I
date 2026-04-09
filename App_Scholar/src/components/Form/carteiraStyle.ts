@@ -8,7 +8,7 @@ export const styles = (theme: ThemeType) => {
 
     container: {
       flex: 1,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.surface,
     },
 
     header: {

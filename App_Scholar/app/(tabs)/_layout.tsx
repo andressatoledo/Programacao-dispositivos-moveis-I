@@ -4,19 +4,33 @@ import { HapticTab } from '../../src/components/haptic-tab';
 import { useTheme } from '../../src/contexts/Theme/themeContext';
 
 export default function TabLayout() {
-  // const colorScheme = useColorScheme();
   const { theme } = useTheme();
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: theme.colors.activeTab,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarInactiveTintColor: theme.colors.inactiveTab
-      }}
-    >
-      {/* Home */}
+  screenOptions={{
+    headerShown: false,
+    tabBarButton: HapticTab,
+
+    tabBarActiveTintColor: theme.colors.activeTab,
+    tabBarInactiveTintColor: theme.colors.inactiveTab,
+
+    tabBarStyle: {
+      position: "absolute",
+      backgroundColor: theme.colors.background,
+      borderTopWidth: 0,
+
+      elevation: 8, 
+      height: 50,
+    },
+
+    tabBarLabelStyle: {
+      fontSize: 10,
+      fontWeight: "500",
+    },
+  }}
+>
+  
      <Tabs.Screen
         name="home"
         options={{
@@ -27,15 +41,7 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="cadastros"
-        options={{
-          title: 'Cadastros',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="clipboard-text" color={color} size={size} />
-          ),
-        }}
-      />
+
 
       <Tabs.Screen
         name="config"
@@ -47,20 +53,6 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Aluno */}
-      {/* {isAluno && (
-        <Tabs.Screen name="boletim" options={{ title: 'Boletim' }} />
-      )} */}
-
-      {/* Professor */}
-      {/* {isProfessor && (
-        <Tabs.Screen name="notas" options={{ title: 'Notas' }} />
-      )} */}
-
-      {/* Admin */}
-      {/* {isAdmin && (
-        <Tabs.Screen name="usuarios" options={{ title: 'Usuários' }} />
-      )} */}
     </Tabs>
   );
 }

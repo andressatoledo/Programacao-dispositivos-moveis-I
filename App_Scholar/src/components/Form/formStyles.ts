@@ -16,7 +16,7 @@ export const styles = (theme: ThemeType) =>
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.space,
       backgroundColor: theme.colors.surface,
-      paddingTop: 40
+      paddingTop: 15,
     },
 
     title: {

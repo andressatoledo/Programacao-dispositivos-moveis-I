@@ -1,175 +1,98 @@
-import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTheme } from '../../src/contexts/Theme/themeContext';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import { useTheme } from "../../src/contexts/Theme/themeContext";
+import { RootStackParamList } from "./types";
 
-import { RootStackParamList } from './types';
-import BottomTabs from './bottomTabs';
-
-//Abastecimento
-import { Curso } from '../screens/Cadastros/Curso';
-import {CursoForm} from '../screens/Cadastros/Curso/CursoForm'
-
+// Imports (Ajuste os caminhos conforme o seu projeto)
+import Home from "@/src/screens/Home/home";
+import { Aluno } from "../screens/Aluno/Aluno";
+import { AlunoForm } from "../screens/Aluno/AlunoForm";
+import { Curso } from "../screens/Cadastros/Curso";
+import { CursoForm } from "../screens/Cadastros/Curso/CursoForm";
+// Adicione os imports faltantes:
+// import { Boletim } from '../screens/Boletim';
+// import { BoletimForm } from '../screens/Boletim/BoletimForm';
+// import { Disciplina } from '../screens/Disciplina';
+// import { DisciplinaForm } from '../screens/Disciplina/DisciplinaForm';
+// import { Professor } from '../screens/Professor';
+// import { ProfessorForm } from '../screens/Professor/ProfessorForm';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function AppStack() {
   const { theme } = useTheme();
 
+  const headerOptions = {
+    headerStyle: {backgroundColor: theme.colors.surface},
+    headerShadowVisible: false,
+    headerTintColor: theme.colors.text,
+    headerTitleStyle: { fontWeight: "bold" as const },
+    
+  };
+
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Tabs"
-        component={BottomTabs}
-        options={{
-          headerShown: false,
-          
-        }}
+        name="Home"
+        component={Home}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Aluno"
+        component={Aluno}
+        options={{ title: "Alunos", ...headerOptions }}
+      />
+      <Stack.Screen
+        name="AlunoForm"
+        component={AlunoForm}
+        options={{ title: "Alunos", ...headerOptions }}
+      />
+
+      <Stack.Screen
+        name="Curso"
+        component={Curso}
+        options={{ title: "Cursos", ...headerOptions }}
+      />
+      <Stack.Screen
+        name="CursoForm"
+        component={CursoForm}
+        options={{ title: "Cursos", ...headerOptions }}
       />
 
       {/* <Stack.Screen
-        name="ViagemForm"
-        component={ViagemForm}
-        options={{ title: 'Viagem', headerStyle: {
-            backgroundColor: theme.colors.background,
-          },
-          headerTintColor: theme.colors.text,
-          headerShadowVisible:false,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }}}
-      /> */}
-
+        name="Boletim"
+        component={Boletim}
+        options={{ title: 'Boletim', ...headerOptions }}
+      /> 
       <Stack.Screen
-        name="Curso"
-        component={Curso}
-        options={{ title: 'Alunos', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
+        name="BoletimForm"
+        component={BoletimForm}
+        options={{ title: 'Boletim', ...headerOptions }}
+      />
+
+      
+      <Stack.Screen
+        name="Disciplina"
+        component={Disciplina}
+        options={{ title: 'Disciplinas', ...headerOptions }}
+      />
+      <Stack.Screen
+        name="DisciplinaForm"
+        component={DisciplinaForm}
+        options={{ title: 'Disciplinas', ...headerOptions }}
       />
 
       <Stack.Screen
-        name="CursoForm"
-        component={CursoForm}
-        options={{ title: 'Alunos', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
+        name="Professor"
+        component={Professor}
+        options={{ title: 'Professores', ...headerOptions }}
       />
-
-       <Stack.Screen
-        name="Curso"
-        component={Curso}
-        options={{ title: 'Boletim', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
       <Stack.Screen
-        name="CursoForm"
-        component={CursoForm}
-        options={{ title: 'Boletim', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-       <Stack.Screen
-        name="Curso"
-        component={Curso}
-        options={{ title: 'Cursos', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-      <Stack.Screen
-        name="CursoForm"
-        component={CursoForm}
-        options={{ title: 'Cursos', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-       <Stack.Screen
-        name="CursoForm"
-        component={CursoForm}
-        options={{ title: 'Disciplinas', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-       <Stack.Screen
-        name="Curso"
-        component={Curso}
-        options={{ title: 'Disciplinas', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-      <Stack.Screen
-        name="CursoForm"
-        component={CursoForm}
-        options={{ title: 'Professores', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-       <Stack.Screen
-        name="Curso"
-        component={Curso}
-        options={{ title: 'Professores', headerStyle: {
-            backgroundColor: theme.colors.backgroundCard
-          },
-          headerShadowVisible:false,
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold'
-          },}}
-      />
-
-     
+        name="ProfessorForm"
+        component={ProfessorForm}
+        options={{ title: 'Professores', ...headerOptions }}
+      />*/}
     </Stack.Navigator>
   );
 }

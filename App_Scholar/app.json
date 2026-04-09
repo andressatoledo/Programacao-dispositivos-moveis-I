@@ -8,6 +8,10 @@
     "scheme": "appscholar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+     "androidNavigationBar": {
+      "barStyle": "dark-content",
+    },
+  
     "ios": {
       "supportsTablet": true
     },

@@ -1,4 +1,11 @@
-import { View, Text, TextInput, Pressable, KeyboardTypeOptions } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  KeyboardTypeOptions,
+  TouchableOpacity,
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/Theme/themeContext';
 import { FormError } from './FormError';
@@ -7,6 +14,9 @@ interface Props {
   label: string;
   icon?: string;
   iconPosition?: 'top' | 'inside';
+  rightIcon?: string;
+  onRightIconPress?: () => void;
+  secureTextEntry?: boolean;
   value?: string;
   placeholder?: string;
   editable?: boolean;
@@ -21,6 +31,9 @@ export function InputField({
   label,
   icon,
   iconPosition = 'top',
+  rightIcon,
+  onRightIconPress,
+  secureTextEntry,
   value,
   placeholder,
   editable = true,
@@ -37,14 +50,11 @@ export function InputField({
     ? theme.colors.error
     : theme.colors.primary;
 
-  // const isNumeric = keyboardType === 'numeric';
-
-  // valor exibido no input
   const displayValue = value ?? '';
 
-function handleChange(text: string) {
-  onChangeText?.(text);
-}
+  function handleChange(text: string) {
+    onChangeText?.(text);
+  }
 
   const InputContent = (
     <View
@@ -55,18 +65,20 @@ function handleChange(text: string) {
         borderColor,
         borderRadius: 10,
         backgroundColor: theme.colors.backgroundCard,
-        paddingHorizontal: 12
+        paddingHorizontal: 12,
       }}
     >
+      {/* ÍCONE ESQUERDA */}
       {icon && iconPosition === 'inside' && (
         <MaterialCommunityIcons
-          symbol={icon}
+          name={icon as any} 
           size={20}
           color={theme.colors.primary}
           style={{ marginRight: 8 }}
         />
       )}
 
+      {/* INPUT */}
       <TextInput
         value={displayValue}
         placeholder={placeholder}
@@ -74,13 +86,25 @@ function handleChange(text: string) {
         keyboardType={keyboardType}
         onChangeText={handleChange}
         placeholderTextColor={theme.colors.opaco}
+        secureTextEntry={secureTextEntry}
         style={{
           flex: 1,
           paddingVertical: 12,
           fontSize: theme.sizes.mediumText.fontSize,
-          color: theme.colors.text
+          color: theme.colors.text,
         }}
       />
+
+      {/* ÍCONE DIREITA (ex: olho) */}
+      {rightIcon && (
+        <TouchableOpacity onPress={onRightIconPress}>
+          <MaterialCommunityIcons
+            name={rightIcon as any}
+            size={20}
+            color={theme.colors.primary}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 
@@ -91,12 +115,12 @@ function handleChange(text: string) {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            marginBottom: 6
+            marginBottom: 6,
           }}
         >
           {icon && iconPosition === 'top' && (
             <MaterialCommunityIcons
-              symbol={icon}
+              name={icon as any} // 🔥 CORRIGIDO
               size={18}
               color={theme.colors.detail}
             />
@@ -107,7 +131,7 @@ function handleChange(text: string) {
               style={{
                 marginLeft: icon && iconPosition === 'top' ? 6 : 0,
                 color: theme.colors.text,
-                fontSize: theme.sizes.mediumText.fontSize
+                fontSize: theme.sizes.mediumText.fontSize,
               }}
             >
               {label}

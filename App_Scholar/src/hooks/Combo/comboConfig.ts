@@ -6,4 +6,14 @@ export const comboConfig = {
     optionsKey: 'optionsCursos',
   },
 
+  boletimSituacao: {
+    hook: comboOptions.boletimSituacao,
+    optionsKey: 'optionsBoletimSituacao',
+  },
+
+  professores: {
+    hook: comboOptions.professores,
+    optionsKey: 'optionsProfessores',
+  },
+
 };

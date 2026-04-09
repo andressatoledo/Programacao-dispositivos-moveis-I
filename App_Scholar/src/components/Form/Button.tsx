@@ -61,7 +61,7 @@ export function Button({
     >
       {icon && (
         <MaterialCommunityIcons
-          symbol={icon}
+          name={icon as any}
           size={20}
           color={textColor}
         />

@@ -16,9 +16,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
 
   function login(data: { user: Usuario; token: string }) {
-    console.log('login: ',data);
     setUser(data.user);
     setToken(data.token);
+    
   }
 
   function logout() {
