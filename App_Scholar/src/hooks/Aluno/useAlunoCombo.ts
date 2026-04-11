@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CursoService } from '../../services/cursoService';
+import { AlunoService } from '../../services/alunoService';
 
 interface ComboOption {
   label: string;
@@ -7,22 +7,22 @@ interface ComboOption {
 }
 
 // Mock temporário seguindo a interface ideal
-const CURSOS_MOCK: ComboOption[] = [
-  { label: 'Análise e Desenvolvimento de Sistemas', value: '1' },
-  { label: 'Engenharia de Software', value: '2' },
-  { label: 'Ciência da Computação', value: '3' },
-  { label: 'Sistemas de Informação', value: '4' },
+const MOCK: ComboOption[] = [
+  { label: 'Ana Paula', value: '1' },
+  { label: 'Carlos Silva', value: '2' },
+  { label: 'Mariana Santos', value: '3' },
+  { label: 'Pedro Oliveira', value: '4' },
 ];
 
-export function useCursoCombo() {
-  const [optionsCursos, setOptions] = useState<ComboOption[]>([]);
-  const [loadingCursos, setLoading] = useState(true);
+export function useAlunoCombo() {
+  const [optionsAlunos, setOptions] = useState<ComboOption[]>([]);
+  const [loadingAlunos, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
         // Tentativa de buscar da API
-        const data = await CursoService.buscarCombo();
+        const data = await AlunoService.buscarCombo();
 
         const mapped = data.map((c) => ({
           value: c.value,
@@ -33,7 +33,7 @@ export function useCursoCombo() {
       } catch (error) {
         console.warn("Usando dados de mock (Falha na API ou ambiente local)", error);
         // Em caso de erro (ou enquanto a API não existe), injetamos o mock
-        setOptions(CURSOS_MOCK);
+        setOptions(MOCK);
       } finally {
         setLoading(false);
       }
@@ -42,5 +42,5 @@ export function useCursoCombo() {
     load();
   }, []);
 
-  return { optionsCursos, loadingCursos };
+  return { optionsAlunos, loadingAlunos };
 }

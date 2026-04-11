@@ -1,14 +1,10 @@
 import { View, ScrollView } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
-// import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-// import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { FilterField } from './FilterField';
 import { FilterFieldConfig } from './types';
 import { SubmitButton } from '../Form/SubmitButton';
 import { Button } from '../Form/Button';
 import { useTheme } from '../../contexts/Theme/themeContext';
-// import {Form} from '../Form/Form'
 
 import { useEffect } from 'react';
 

@@ -1,14 +1,14 @@
-export interface CursoPeriodo {
-  Manha: 'Manhã';
-  Tarde: 'Tarde';
-  Noite: 'Noite';
-  Integral: 'Integral';
+export enum CursoPeriodo {
+  Matutino = 'Matutino',
+  Vespertino = 'Vespertino',
+  Noturno = 'Noturno',
+  Integral = 'Integral'
 }
 
 export interface Curso {
   cursoId: string;
   cursoNome: string; 
-  cursoPeriodo: CursoPeriodo[keyof CursoPeriodo];
+  cursoPeriodo: CursoPeriodo;
   cursoMediaAprovacao?: number; 
   cursoDuracao?: number; 
 }
@@ -16,7 +16,7 @@ export interface Curso {
 export interface CursoFiltro {
   cursoId?: string;
   cursoNome?: string; 
-  cursoPeriodo?: CursoPeriodo[keyof CursoPeriodo];
+  cursoPeriodo?: CursoPeriodo;
   cursoMediaAprovacao?: number; 
   cursoDuracao?: number; 
 }

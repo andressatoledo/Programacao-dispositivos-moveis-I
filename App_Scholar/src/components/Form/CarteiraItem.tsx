@@ -66,13 +66,15 @@ export function CarteiraItem({
       />
     </TouchableOpacity>
 
-      <TouchableOpacity onPress={onPressDelete} hitSlop={10}>
-        <MaterialCommunityIcons
-        name="trash-can"
-        size={22}
-        color={theme.colors.opaco}
-      />
-      </TouchableOpacity>
+      {onPressDelete && (
+        <TouchableOpacity onPress={onPressDelete} hitSlop={10}>
+          <MaterialCommunityIcons
+            name="trash-can"
+            size={22}
+            color={theme.colors.opaco}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

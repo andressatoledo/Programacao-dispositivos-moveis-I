@@ -43,7 +43,7 @@ export function DashboardHeader({ Titulo, Subtitulo }: DashboardHeaderProps) {
             <MaterialCommunityIcons
               name="school"
               size={20}
-              color="#fff"
+              color={theme.colors.text}
             />
           </View>
 

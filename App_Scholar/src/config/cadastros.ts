@@ -14,8 +14,15 @@ export const cadastrosConfig = [
     icon: "file-document-edit",
     title: "Boletins",
     subtitle: "Boletins por aluno",
-    routeName: "Curso",
+    routeName: "BoletimAdmin",
     roles: ["admin", "professor"] as UserRole[],
+  },
+   {
+    icon: "file-document-edit",
+    title: "Boletim",
+    subtitle: "Boletim",
+    routeName: "BoletimAluno",
+    roles: ["aluno"] as UserRole[],
   },
   {
     icon: "school",
@@ -28,14 +35,14 @@ export const cadastrosConfig = [
     icon: "book-open-page-variant",
     title: "Disciplinas",
     subtitle: "Disciplinas por curso",
-    routeName: "Curso",
+    routeName: "Disciplina",
     roles: ["admin"] as UserRole[],
   },
   {
     icon: "account-tie",
     title: "Professores",
     subtitle: "Professores da instituição",
-    routeName: "Curso",
+    routeName: "Professor",
     roles: ["admin"] as UserRole[],
   },
 ] as const satisfies ReadonlyArray<{

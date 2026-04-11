@@ -12,9 +12,7 @@ interface Props {
 
 
 export function FilterField({ field, value, onChange }: Props) {
-  console.log(field.source);
   const { options, loading } = useComboOptions(field.source ?? undefined);
-  console.log('options', options);
 
   switch (field.type) {
     case 'text':

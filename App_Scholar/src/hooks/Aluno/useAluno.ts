@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AlunoService } from '../../services/alunoService';
-import  {type AlunoFiltro, Aluno}   from '../../types/aluno';
+import { type AlunoFiltro, Aluno } from '../../types/aluno';
 
 export function useCarteira() {
   const mockAlunos = [
@@ -31,44 +31,50 @@ export function useCarteira() {
       alunoEstado: 'SP'
     }
   ];
-  
 
-  const [dados, setDados] = useState<Aluno[]>([]);
+  const [dados, setDados] = useState<Aluno[]>(mockAlunos);
   const [loading, setLoading] = useState(false);
 
-
   const buscarCarteira = useCallback(
-  async (filtros?: AlunoFiltro) => {
-    setLoading(true);
+    async (filtros?: AlunoFiltro) => {
+      setLoading(true);
+      try {
+        const response = await AlunoService.buscarTodas(filtros);
+        setDados(response);
+      } catch (error) {
+      
+        console.warn("API Falhou, mantendo dados locais/mock");
+        setDados(mockAlunos);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
-    try {
-      const response = await AlunoService.buscarTodas(filtros);
-      setDados(response);
-    } finally {
-      setLoading(false);
-    }
-  },
-  []
-);
+  const deleteAluno = useCallback(
+    async (alunoId: string) => {
+      setLoading(true);
+      try {
+        // --- SIMULAÇÃO (Remova quando AlunoService.excluir estiver pronto) ---
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-   const deleteAluno = useCallback(
-  async (alunoId: string) => {
-    setLoading(true);
-    try {
-      await AlunoService.excluir(alunoId);
-      setDados((prev) => prev.filter((a) => a.alunoId !== alunoId));
-    } finally {
-      setLoading(false);
-    }
-  },
-  []
-);
-
-
-
+        // await AlunoService.excluir(alunoId);
+        setDados((prev) => prev.filter((a) => a.alunoId !== alunoId));
+        
+      } catch (error) {
+        console.error("Erro ao deletar:", error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   return {
-    dados:mockAlunos,
+    dados, 
     loading,
     buscarCarteira,
     deleteAluno

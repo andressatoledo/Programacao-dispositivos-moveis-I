@@ -1,5 +1,3 @@
-// src/components/Dashboard/ResumoCard.tsx
-
 import { View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts/Theme/themeContext';
@@ -17,11 +15,11 @@ export function ResumoCard({ label, value, icon, color }: Props) {
   return (
     <View
       style={{
-        flex: 1,
+        // flex: 1,
         backgroundColor: theme.colors.backgroundCard,
         borderRadius: 16,
         padding: 16,
-        margin: 6,
+        width: '48%'
       }}
     >
       <View
@@ -31,6 +29,7 @@ export function ResumoCard({ label, value, icon, color }: Props) {
           borderRadius: 10,
           alignSelf: 'flex-start',
           marginBottom: 10,
+          
         }}
       >
         <MaterialCommunityIcons name={icon as any} size={20} color={color} />

@@ -28,7 +28,7 @@ export default function Home() {
     <Form>
       <DashboardHeader />
 
-      <View style={{ flexDirection: "row", flex: 1, flexWrap: "wrap" }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
         {resumoFiltrado.map((item) => (
           <ResumoCard key={item.label} {...item} />
         ))}

@@ -1,28 +1,27 @@
 import { useEffect, useState } from 'react';
-import { CursoService } from '../../services/cursoService';
+import { DisciplinaService } from '../../services/disciplinaService';
 
 interface ComboOption {
   label: string;
   value: string;
 }
 
-// Mock temporário seguindo a interface ideal
+
 const CURSOS_MOCK: ComboOption[] = [
-  { label: 'Análise e Desenvolvimento de Sistemas', value: '1' },
-  { label: 'Engenharia de Software', value: '2' },
-  { label: 'Ciência da Computação', value: '3' },
-  { label: 'Sistemas de Informação', value: '4' },
+  { label: 'Engenharia de software', value: '1' },
+  { label: 'Programação', value: '2' },
+  { label: 'Experiência do Usuário', value: '3' },
 ];
 
-export function useCursoCombo() {
-  const [optionsCursos, setOptions] = useState<ComboOption[]>([]);
-  const [loadingCursos, setLoading] = useState(true);
+export function useDisciplinaCombo() {
+  const [optionsDisciplinas, setOptions] = useState<ComboOption[]>([]);
+  const [loadingDisciplinas, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
         // Tentativa de buscar da API
-        const data = await CursoService.buscarCombo();
+        const data = await DisciplinaService.buscarCombo();
 
         const mapped = data.map((c) => ({
           value: c.value,
@@ -42,5 +41,5 @@ export function useCursoCombo() {
     load();
   }, []);
 
-  return { optionsCursos, loadingCursos };
+  return { optionsDisciplinas, loadingDisciplinas };
 }

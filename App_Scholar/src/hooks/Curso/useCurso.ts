@@ -1,47 +1,66 @@
-// import { useState, useCallback } from 'react';
-// import { AbastecimentoService } from '../../../shared/services/abastecimentoService';
-// import  type FiltroAbastecimento  from '../../../shared/types/Abastecimento/abastecimentoFiltro';
-// import  {Abastecimento} from '../../../shared/types/Abastecimento/abastecimento';
+import { useState, useCallback } from 'react';
+import { CursoService } from '../../services/cursoService';
+import { type CursoFiltro, Curso , CursoPeriodo} from '../../types/curso';
 
-// export function useCarteira() {
-//   const [dados, setDados] = useState<Abastecimento[]>([]);
-//   const [loading, setLoading] = useState(false);
+export function useCurso() {
+  const mockCursos: Curso[] = [
+    {
+      cursoId: '1',
+      cursoNome: 'Análise e Desenvolvimento de Sistemas',
+      cursoPeriodo: CursoPeriodo.Noturno,
+      cursoMediaAprovacao: 7,
+      cursoDuracao: 5,
+    },
+    {
+      cursoId: '2',
+      cursoNome: 'Engenharia de Software',
+      cursoPeriodo: CursoPeriodo.Matutino,
+      cursoMediaAprovacao: 7.5,
+      cursoDuracao: 10,
+    }
+  ];
 
+  const [dados, setDados] = useState<Curso[]>(mockCursos);
+  const [loading, setLoading] = useState(false);
 
-//   const buscarCarteira = useCallback(
-//   async (filtros?: FiltroAbastecimento) => {
-//     setLoading(true);
+  const buscarCurso = useCallback(
+    async (filtros?: CursoFiltro) => {
+      setLoading(true);
+      try {
+        const response = await CursoService.buscarTodas(filtros);
+        setDados(response);
+      } catch (error) {
+        console.warn("API Falhou, mantendo dados locais/mock (Curso)");
+        setDados(mockCursos);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
-//     try {
-//       console.log('filtros do abastecimento',filtros)
-//       const response = await AbastecimentoService.buscarTodas(filtros);
-//       setDados(response);
-//     } finally {
-//       setLoading(false);
-//     }
-//   },
-//   []
-// );
+  const deleteCurso = useCallback(
+    async (cursoId: string) => {
+      setLoading(true);
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // await CursoService.excluir(cursoId);
+        setDados((prev) => prev.filter((c) => c.cursoId !== cursoId));
+      } catch (error) {
+        console.error("Erro ao deletar curso:", error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
-//    const deleteAbastecimento = useCallback(
-//   async (abastecimentoId: string) => {
-//     setLoading(true);
-//     try {
-//       await AbastecimentoService.excluir(abastecimentoId);
-//       setDados((prev) => prev.filter((a) => a._id !== abastecimentoId));
-//     } finally {
-//       setLoading(false);
-//     }
-//   },
-//   []
-// );
-
-
-
-//   return {
-//     dados,
-//     loading,
-//     buscarCarteira,
-//     deleteAbastecimento
-//   };
-// }
+  return {
+    dados, 
+    loading,
+    buscarCurso,
+    deleteCurso
+  };
+}

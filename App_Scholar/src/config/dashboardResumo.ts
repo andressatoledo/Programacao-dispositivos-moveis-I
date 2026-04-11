@@ -21,20 +21,20 @@ export const dashboardResumoConfig: ResumoItem[] = [
     value: 3,
     icon: 'school',
     color: '#FF9800',
-    roles: ['admin'],
+    roles: ['admin', 'aluno'],
   },
   {
     label: 'Disciplinas',
     value: 3,
     icon: 'book-open-variant',
     color: '#2196F3',
-    roles: ['admin', 'professor'],
+    roles: ['admin', 'professor', 'aluno'],
   },
   {
     label: 'Boletins',
     value: 4,
     icon: 'file-document-outline',
     color: '#FF5722',
-    roles: ['admin', 'professor', 'aluno'],
+    roles: ['admin', ],
   },
 ];

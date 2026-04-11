@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useTheme } from '../../theme/themeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../../contexts/Theme/themeContext';
 
 interface EmptyStateProps {
   title?: string;

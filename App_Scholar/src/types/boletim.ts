@@ -10,7 +10,7 @@ export type BoletimSituacao =
   
 
 export interface Boletim {
-  boletimId?: string;
+  boletimId: string;
   alunoID: string;
   alunoNome: string;            
   disciplinaID: string;
@@ -18,7 +18,7 @@ export interface Boletim {
   boletimNota1: number;
   boletimNota2: number;
   boletimMedia: number;
-  boletimSituacao: BoletimSituacao[keyof BoletimSituacao];
+  boletimSituacao: BoletimSituacao;
 }
 
 
@@ -28,8 +28,9 @@ export interface BoletimFiltro {
   alunoNome?: string;            
   disciplinaID?: string;
   disciplinaNome?: string;       
+  disciplinaSemestre?: number;
   boletimNota1?: number;
   boletimNota2?: number;
   boletimMedia?: number;
-  boletimSituacao?: BoletimSituacao[keyof BoletimSituacao];
+  boletimSituacao?: BoletimSituacao;
 }

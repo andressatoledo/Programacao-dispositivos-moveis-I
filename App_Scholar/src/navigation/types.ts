@@ -36,27 +36,27 @@ export type RootStackParamList = {
     navigation?: undefined;
   };
 
-  Boletim: undefined;
+  BoletimAluno: undefined;
 
-  BoletimForm: {
+  BoletimAlunoForm: {
     mode: Mode;
-    boletimId?: string;
+    alunoId?: string;
     navigation?: undefined;
   };
 
-  Empregadora: undefined;
+  BoletimAdmin: undefined;
 
-  EmpregadoraForm: {
+  BoletimAdminForm: {
     mode: Mode;
-    empregadoraId?: string;
+    alunoId?: string;
+    disciplinaId?: string;
     navigation?: undefined;
   };
 
-  Manutencao: undefined;
-
-  ManutencaoForm: {
+  BoletimDisciplinaAdmin: {
     mode: Mode;
-    manutencaoId?: string;
+    alunoId?: string;
     navigation?: undefined;
   };
+
 };

@@ -1,26 +1,28 @@
 export const lightTheme = {
   mode: 'light',
   colors: {
-    background: '#FFF5F7', 
+    background: '#F8FAFC', // cinza bem leve (mais moderno que rosinha)
     surface: '#FFFFFF',
-    
-    primary: '#8B1E3F',
-    detail: '#B23A48', 
-    destaque: '#5A0F24', 
-    
-    text: '#2A0E12',
-    opaco: '#8A6B73',
 
-    success: '#2E7D32',
-    error: '#C62828',
-    warning: '#ED6C02',
+    primary: '#4F46E5', // azul/roxo moderno (indigo)
+    detail: '#6366F1', 
+    destaque: '#3730A3',
 
-    activeTab: '#FDECEF',
-    inactiveTab: '#9ca3af',
+    text: '#0F172A', // preto suave (melhor leitura)
+    opaco: '#64748B',
 
-    backgroundCard: '#faf1f1',
-    backgroundCardDestaque: '#8B1E3F1A',
-    space: '#F3DDE2',
+    success: '#16A34A',
+    error: '#DC2626',
+    warning: '#F59E0B',
+
+    activeTab: '#EEF2FF',
+    inactiveTab: '#94A3B8',
+
+    backgroundCard: '#FFFFFF',
+    backgroundCardDestaque: '#4F46E51A',
+
+    space: '#E2E8F0',
+    backgroundStatus: '#00000010',
   },
 
   sizes: {
@@ -48,27 +50,28 @@ export const lightTheme = {
 export const darkTheme = {
   mode: 'dark',
   colors: {
-    background: '#14080B', // quase preto com vinho
-    surface: '#0a0506',
+    background: '#020617', // preto azulado (MUITO mais bonito)
+    surface: '#020617',
 
-    primary: '#5A0F24', // vinho mais vivo no dark
-    detail: '#8B1E3F',
-    destaque: '#5A0F24',
+    primary: '#6366F1', // mais vivo no dark
+    detail: '#818CF8',
+    destaque: '#4F46E5',
 
-    text: '#F5E9EC',
-    opaco: '#A88A91',
+    text: '#E2E8F0',
+    opaco: '#94A3B8',
 
-    success: '#235025',
-    error: '#EF5350',
-    warning: '#FFA726',
+    success: '#22C55E',
+    error: '#EF4444',
+    warning: '#FBBF24',
 
-    activeTab: '#8B1E3F',
-    inactiveTab: '#9ca3af',
+    activeTab: '#1E1B4B',
+    inactiveTab: '#64748B',
 
-    backgroundCard: '#1E0F14',
-    backgroundCardDestaque: '#B23A4833',
-    space: '#2A141A',
+    backgroundCard: '#0F172A',
+    backgroundCardDestaque: '#6366F133',
 
+    space: '#1E293B',
+    backgroundStatus: '#FFFFFF10',
   },
 
   sizes: {

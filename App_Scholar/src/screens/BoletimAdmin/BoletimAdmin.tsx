@@ -11,42 +11,38 @@ import { FakeBottomSheet } from '../../components/Form/FakeButtonSheet';
 import { EmptyCarteira } from '../../components/Feedback/EmptyCarteira';
 import { ConfirmDialog } from '../../components/Feedback/ConfirmDialog';
 
-import { useCarteira } from '../../hooks/Aluno/useAluno';
+import { useBoletimAdmin } from '../../hooks/Boletim/useBoletimAdmin';
 import { useFilterSheet } from '../../hooks/Filter/useFilterSheet';
 import { useGenericFilter } from '../../hooks/Filter/useGenericFilter';
-import { useMensagem } from '../../hooks/Outros/useMensagem'; // Import do hook
+import { useMensagem } from '../../hooks/Outros/useMensagem';
 
-import { Aluno as TypeAluno, AlunoFiltro } from '../../types/aluno';
+import { BoletimFiltro } from '../../types/boletim';
 import { RootStackParamList } from '../../navigation/types';
 import { TypeMessage } from '@/src/types/Outros/messageType';
-import { FiltroAluno } from './filtro';
+import { FiltroBoletimAdmin } from './filtro'; 
 
-function description(item: TypeAluno): string {
-  return item.alunoEmail && item.alunoTelefone ? `${item.alunoEmail} • ${item.alunoTelefone}` : '';
-}
-
-export function Aluno() {
-  type AlunoNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Aluno'>;
-  const navigation = useNavigation<AlunoNavigationProp>();
+export function BoletimAdmin() {
+  type NavProp = NativeStackNavigationProp<RootStackParamList, 'BoletimAdmin'>;
+  const navigation = useNavigation<NavProp>();
   const showMessage = useMensagem();
 
   const { visible, abrir, fechar } = useFilterSheet();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   
-  const { filters, setFilters, clearFilters } = useGenericFilter<AlunoFiltro>();
-  const { dados, buscarCarteira, deleteAluno } = useCarteira();
+  const { filters, setFilters, clearFilters } = useGenericFilter<BoletimFiltro>();
+  const { alunosUnicos, buscarListaAlunos, deleteBoletim } = useBoletimAdmin();
   const [busca, setBusca] = useState('');
 
-
+  // Função para deletar todos os registros de boletim do aluno selecionado
   const handleConfirmDelete = async () => {
     if (!selectedId) return;
 
     try {
-      await deleteAluno(selectedId);
-      showMessage('Aluno excluído com sucesso.', TypeMessage.success);
+      await deleteBoletim(selectedId);
+      showMessage('Registros do aluno excluídos com sucesso.', TypeMessage.success);
     } catch (error) {
-      showMessage('Erro ao excluir o aluno.', TypeMessage.error);
+      showMessage('Erro ao excluir registros do aluno.', TypeMessage.error);
     } finally {
       setConfirmVisible(false);
       setSelectedId(null);
@@ -55,35 +51,40 @@ export function Aluno() {
 
   useFocusEffect(
     useCallback(() => {
-      buscarCarteira({ ...filters, alunoNome: busca });
-    }, [buscarCarteira, filters, busca])
+      // Busca a lista de alunos que possuem boletins
+      buscarListaAlunos({ ...filters, alunoNome: busca });
+    }, [buscarListaAlunos, filters, busca])
   );
 
   return (
     <View style={{ flex: 1 }}>
-      <Carteira title="Aluno">
+      <Carteira title="Boletins">
         <CarteiraHeader
           placeholder="Buscar aluno..."
           searchValue={busca}
           onSearchChange={setBusca}
           onFilterPress={abrir}
-          onAddPress={() => navigation.navigate('AlunoForm', { mode: 'create' })}
+         
         />
         
-        {dados.length === 0 ? (
+        {alunosUnicos.length === 0 ? (
           <EmptyCarteira />
         ) : (
-          dados.map(item => (
+          alunosUnicos.map(item => (
             <CarteiraItem
-              key={item.alunoId}
-              icon="school"
+              key={item.alunoID}
+              icon="account-school"
               title={item.alunoNome}
-              description={description(item)}
-              onPress={() => navigation.navigate('AlunoForm', { alunoId: item.alunoId, mode: 'edit' })}
-              onPressDelete={() => {
-                setSelectedId(item.alunoId ?? null);
-                setConfirmVisible(true);
+              description="Clique para gerenciar notas e disciplinas"
+              onPress={() => {
+                // Navega para a tela que lista as disciplinas deste aluno específico
+                navigation.navigate('BoletimDisciplinaAdmin', { 
+                  alunoId: item.alunoID,
+                  mode: 'edit' // Na edição, geralmente não mudamos o aluno, apenas as notas/disciplinas
+                 
+                });
               }}
+             
             />
           ))
         )}
@@ -91,9 +92,9 @@ export function Aluno() {
 
       <ConfirmDialog
         visible={confirmVisible}
-        title="Excluir aluno"
-        description="Deseja excluir este aluno? Essa ação não poderá ser desfeita."
-        confirmText="Excluir"
+        title="Excluir registros"
+        description={`Deseja excluir todos os boletins de ${alunosUnicos.find(a => a.alunoID === selectedId)?.alunoNome}?`}
+        confirmText="Excluir tudo"
         cancelText="Cancelar"
         danger
         onCancel={() => {
@@ -105,16 +106,16 @@ export function Aluno() {
 
       <FakeBottomSheet visible={visible} onClose={fechar}>
         <FilterSheet
-          filters={FiltroAluno}
+          filters={FiltroBoletimAdmin}
           filtroAtual={filters}
           onApply={data => {
             setFilters(data);
-            buscarCarteira({ ...data, alunoNome: busca });
+            buscarListaAlunos({ ...data, alunoNome: busca });
             fechar();
           }}
           onClear={() => {
             clearFilters();
-            buscarCarteira({ alunoNome: busca });
+            buscarListaAlunos({ alunoNome: busca });
             fechar();
           }}
         />

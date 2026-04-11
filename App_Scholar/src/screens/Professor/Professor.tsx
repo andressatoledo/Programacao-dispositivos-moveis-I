@@ -11,42 +11,42 @@ import { FakeBottomSheet } from '../../components/Form/FakeButtonSheet';
 import { EmptyCarteira } from '../../components/Feedback/EmptyCarteira';
 import { ConfirmDialog } from '../../components/Feedback/ConfirmDialog';
 
-import { useCarteira } from '../../hooks/Aluno/useAluno';
+import { useProfessor } from '../../hooks/Professor/useProfessor';
 import { useFilterSheet } from '../../hooks/Filter/useFilterSheet';
 import { useGenericFilter } from '../../hooks/Filter/useGenericFilter';
-import { useMensagem } from '../../hooks/Outros/useMensagem'; // Import do hook
+import { useMensagem } from '../../hooks/Outros/useMensagem';
 
-import { Aluno as TypeAluno, AlunoFiltro } from '../../types/aluno';
+import { Professor as TypeProfessor, ProfessorFiltro } from '../../types/professor';
 import { RootStackParamList } from '../../navigation/types';
 import { TypeMessage } from '@/src/types/Outros/messageType';
-import { FiltroAluno } from './filtro';
+import { FiltroProfessor } from './filtro';
 
-function description(item: TypeAluno): string {
-  return item.alunoEmail && item.alunoTelefone ? `${item.alunoEmail} • ${item.alunoTelefone}` : '';
+function description(item: TypeProfessor): string {
+  return item.professorTitulacao && item.professorEmail 
+    ? `${item.professorTitulacao} • ${item.professorEmail}` 
+    : '';
 }
 
-export function Aluno() {
-  type AlunoNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Aluno'>;
-  const navigation = useNavigation<AlunoNavigationProp>();
+export function Professor() {
+  type ProfessorNavProp = NativeStackNavigationProp<RootStackParamList, 'Professor'>;
+  const navigation = useNavigation<ProfessorNavProp>();
   const showMessage = useMensagem();
 
   const { visible, abrir, fechar } = useFilterSheet();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   
-  const { filters, setFilters, clearFilters } = useGenericFilter<AlunoFiltro>();
-  const { dados, buscarCarteira, deleteAluno } = useCarteira();
+  const { filters, setFilters, clearFilters } = useGenericFilter<ProfessorFiltro>();
+  const { dados, buscarProfessor, deleteProfessor } = useProfessor();
   const [busca, setBusca] = useState('');
-
 
   const handleConfirmDelete = async () => {
     if (!selectedId) return;
-
     try {
-      await deleteAluno(selectedId);
-      showMessage('Aluno excluído com sucesso.', TypeMessage.success);
+      await deleteProfessor(selectedId);
+      showMessage('Professor excluído com sucesso.', TypeMessage.success);
     } catch (error) {
-      showMessage('Erro ao excluir o aluno.', TypeMessage.error);
+      showMessage('Erro ao excluir o professor.', TypeMessage.error);
     } finally {
       setConfirmVisible(false);
       setSelectedId(null);
@@ -55,19 +55,19 @@ export function Aluno() {
 
   useFocusEffect(
     useCallback(() => {
-      buscarCarteira({ ...filters, alunoNome: busca });
-    }, [buscarCarteira, filters, busca])
+      buscarProfessor({ ...filters, professorNome: busca });
+    }, [buscarProfessor, filters, busca])
   );
 
   return (
     <View style={{ flex: 1 }}>
-      <Carteira title="Aluno">
+      <Carteira title="Professor">
         <CarteiraHeader
-          placeholder="Buscar aluno..."
+          placeholder="Buscar professor..."
           searchValue={busca}
           onSearchChange={setBusca}
           onFilterPress={abrir}
-          onAddPress={() => navigation.navigate('AlunoForm', { mode: 'create' })}
+          onAddPress={() => navigation.navigate('ProfessorForm', { mode: 'create' })}
         />
         
         {dados.length === 0 ? (
@@ -75,13 +75,13 @@ export function Aluno() {
         ) : (
           dados.map(item => (
             <CarteiraItem
-              key={item.alunoId}
-              icon="school"
-              title={item.alunoNome}
+              key={item.professorId}
+              icon="account-tie"
+              title={item.professorNome}
               description={description(item)}
-              onPress={() => navigation.navigate('AlunoForm', { alunoId: item.alunoId, mode: 'edit' })}
+              onPress={() => navigation.navigate('ProfessorForm', { professorId: item.professorId, mode: 'edit' })}
               onPressDelete={() => {
-                setSelectedId(item.alunoId ?? null);
+                setSelectedId(item.professorId ?? null);
                 setConfirmVisible(true);
               }}
             />
@@ -91,8 +91,8 @@ export function Aluno() {
 
       <ConfirmDialog
         visible={confirmVisible}
-        title="Excluir aluno"
-        description="Deseja excluir este aluno? Essa ação não poderá ser desfeita."
+        title="Excluir professor"
+        description="Deseja excluir este professor? Essa ação não poderá ser desfeita."
         confirmText="Excluir"
         cancelText="Cancelar"
         danger
@@ -105,16 +105,16 @@ export function Aluno() {
 
       <FakeBottomSheet visible={visible} onClose={fechar}>
         <FilterSheet
-          filters={FiltroAluno}
+          filters={FiltroProfessor}
           filtroAtual={filters}
           onApply={data => {
             setFilters(data);
-            buscarCarteira({ ...data, alunoNome: busca });
+            buscarProfessor({ ...data, professorNome: busca });
             fechar();
           }}
           onClear={() => {
             clearFilters();
-            buscarCarteira({ alunoNome: busca });
+            buscarProfessor({ professorNome: busca });
             fechar();
           }}
         />
