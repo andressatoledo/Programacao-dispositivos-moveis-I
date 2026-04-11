@@ -15,7 +15,6 @@ export function ResumoCard({ label, value, icon, color }: Props) {
   return (
     <View
       style={{
-        // flex: 1,
         backgroundColor: theme.colors.backgroundCard,
         borderRadius: 16,
         padding: 16,

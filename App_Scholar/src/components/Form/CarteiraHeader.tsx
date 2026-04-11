@@ -33,7 +33,7 @@ export function CarteiraHeader({
         marginBottom: 12,
       }}
     >
-      {/* Só renderiza a busca se não estiver oculta E houver função de mudança */}
+   
       {!hideSearch && onSearchChange && (
         <View style={{ flex: 1 }}>
           <InputField
@@ -48,7 +48,6 @@ export function CarteiraHeader({
         </View>
       )}
 
-      {/* Só renderiza o filtro se não estiver oculto E a função onFilterPress existir */}
       {!hideFilter && onFilterPress && (
         <Button
           icon="filter-variant"
@@ -60,7 +59,7 @@ export function CarteiraHeader({
         />
       )}
 
-      {/* Só renderiza o adicionar se não estiver oculto E a função onAddPress existir */}
+     
       {!hideAdd && onAddPress && (
         <Button
           icon="plus"

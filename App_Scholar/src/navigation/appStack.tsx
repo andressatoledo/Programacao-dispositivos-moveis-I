@@ -28,6 +28,10 @@ export function AppStack() {
     headerShadowVisible: false,
     headerTintColor: theme.colors.text,
     headerTitleStyle: { fontWeight: "bold" as const },
+ 
+   
+    // headerStatusBarHeight: 0,
+    
     
   };
 
@@ -42,12 +46,12 @@ export function AppStack() {
       <Stack.Screen
         name="Aluno"
         component={Aluno}
-        options={{ title: "Alunos", ...headerOptions }}
+        options={{ title: "Alunos", ...headerOptions,  }}
       />
       <Stack.Screen
         name="AlunoForm"
         component={AlunoForm}
-        options={{ title: "Alunos", ...headerOptions }}
+        options={{ title: "Alunos",...headerOptions }}
       />
 
       <Stack.Screen

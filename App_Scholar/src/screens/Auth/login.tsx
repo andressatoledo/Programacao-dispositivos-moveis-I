@@ -1,6 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native"; 
 import { useAuth } from "../../hooks/Auth/useAuth";
-// ❌ APAGADO: import { useRouter } from "expo-router";
 import { InputField } from "../../components/Form/InputField";
 import { Button } from "../../components/Form/Button";
 import { Controller } from "react-hook-form";
@@ -18,7 +17,6 @@ export default function LoginScreen() {
   const [role, setRole] = useState<"aluno" | "professor" | "admin">("aluno");
 
   function handleLogin() {
-  
     login({
       user: {
         usuarioId: "1",
@@ -29,22 +27,35 @@ export default function LoginScreen() {
       },
       token: "123",
     });
-
   }
 
   return (
     <Form>
+      {/* Cabeçalho com Logo e Título */}
       <View style={{ alignItems: "center", marginBottom: 30 }}>
+        
+        {/* Adição da Logo */}
+        <Image 
+          source={require("../../../assets/images/logo.png")} 
+          style={{ 
+            width: 80,   // Ajuste o tamanho conforme sua imagem
+            height: 80, 
+            marginBottom: 15 
+          }} 
+          resizeMode="contain"
+        />
+
         <Text
-          style={{ fontSize: 22, fontWeight: "bold", color: theme.colors.text }}
+          style={{ fontSize: 24, fontWeight: "bold", color: theme.colors.text }}
         >
           App Scholar
         </Text>
-        <Text style={{ color: theme.colors.destaque }}>
+        <Text style={{ color: theme.colors.destaque, textAlign: 'center' }}>
           Gerenciamento de Boletim Acadêmico 
         </Text>
       </View>
 
+      {/* Seleção de Perfil */}
       <View
         style={{
           flexDirection: "row",
@@ -79,7 +90,7 @@ export default function LoginScreen() {
         ))}
       </View>
 
-      {/* Login */}
+      {/* Inputs de Login */}
       <Controller
         control={control}
         name="usuarioLogin"
