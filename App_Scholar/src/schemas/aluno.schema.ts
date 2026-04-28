@@ -3,10 +3,10 @@ import { z } from 'zod';
 export const alunoSchema = z.object({
   alunoNome: z.string().min(1, "Nome é obrigatório"),
   alunoMatricula: z.string().min(1, "Matrícula é obrigatória"),
-  cursoID: z.string().min(1, "O curso deve ser selecionado"),
+  cursoId: z.string().min(1, "O curso deve ser selecionado"),
   alunoEmail: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
   alunoTelefone: z.string().min(1, "Telefone é obrigatório"),
-  alunoCEP: z
+  alunoCep: z
     .string()
     .min(1, "CEP é obrigatório")
     .regex(/^\d{5}-\d{3}$/, "Formato de CEP inválido (00000-000)"),

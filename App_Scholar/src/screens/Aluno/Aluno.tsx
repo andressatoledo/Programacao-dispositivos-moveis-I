@@ -14,14 +14,14 @@ import { ConfirmDialog } from '../../components/Feedback/ConfirmDialog';
 import { useCarteira } from '../../hooks/Aluno/useAluno';
 import { useFilterSheet } from '../../hooks/Filter/useFilterSheet';
 import { useGenericFilter } from '../../hooks/Filter/useGenericFilter';
-import { useMensagem } from '../../hooks/Outros/useMensagem'; // Import do hook
-
+import { useMensagem } from '../../hooks/Outros/useMensagem'; 
 import { Aluno as TypeAluno, AlunoFiltro } from '../../types/aluno';
 import { RootStackParamList } from '../../navigation/types';
 import { TypeMessage } from '@/src/types/Outros/messageType';
 import { FiltroAluno } from './filtro';
 
 function description(item: TypeAluno): string {
+  console.log(item);
   return item.alunoEmail && item.alunoTelefone ? `${item.alunoEmail} • ${item.alunoTelefone}` : '';
 }
 

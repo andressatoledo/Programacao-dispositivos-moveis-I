@@ -12,6 +12,7 @@ import { formatar } from "../../utils/formatar";
 import { useMensagem } from "../../hooks/Outros/useMensagem";
 import { TypeMessage } from "@/src/types/Outros/messageType";
 import {navigateWithDelay} from "../../utils/navigateWithDelay";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 type AlunoFormProps = NativeStackScreenProps<RootStackParamList, "AlunoForm">;
 
@@ -28,22 +29,24 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
     loadingCursos,
   } = useAlunoForm(mode, alunoId, navigation);
 
-  // const onSubmit = (data: AlunoFormData) => saveAll(data);
+
   const showMessage = useMensagem();
 
   const onSubmit = async (data: AlunoFormData) => {
-    try {
-      await saveAll(data);
-      const acao = mode === "create" ? "cadastrado" : "atualizado";
-      showMessage(`Aluno ${acao} com sucesso.`, TypeMessage.success);
+  try {
+    await saveAll(data);
 
-      await navigateWithDelay(() => navigation.goBack());
-    } catch (error: any) {
-      const msg =
-        error?.response?.data?.message || "Erro ao salvar os dados do aluno.";
-      showMessage(msg, TypeMessage.error);
-    }
-  };
+    showMessage(
+      `Aluno ${mode === "create" ? "cadastrado" : "atualizado"} com sucesso.`,
+      TypeMessage.success
+    );
+
+    await navigateWithDelay(() => navigation.goBack());
+
+  } catch (error: any) {
+    showMessage(getErrorMessage(error), TypeMessage.error);
+  }
+};
 
   
   return (
@@ -78,7 +81,7 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
 
       <Controller
         control={control}
-        name="cursoID"
+        name="cursoId"
         render={({ field }) => (
           <InputCombo
             label="Curso *"
@@ -87,7 +90,7 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
             loading={loadingCursos}
             onChange={field.onChange}
             disabled={screen.readOnly}
-            error={errors.cursoID?.message}
+            error={errors.cursoId?.message}
           />
         )}
       />
@@ -99,7 +102,8 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
           <InputField
             label="E-mail institucional *"
             value={field.value}
-            onChangeText={(text) => field.onChange(formatar.email(text))}
+            // onChangeText={(text) => field.onChange(formatar.email(text))}
+            onChangeText={(text) => field.onChange(formatar.email(text) || "")}
             editable={!screen.readOnly}
             keyboardType="email-address"
             error={errors.alunoEmail?.message}
@@ -124,14 +128,14 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
 
       <Controller
         control={control}
-        name="alunoCEP"
+        name="alunoCep"
         render={({ field }) => (
           <InputField
             label="CEP *"
             value={field.value}
             onChangeText={(text) => field.onChange(formatar.cep(text))}
             keyboardType="numeric"
-            error={errors.alunoCEP?.message}
+            error={errors.alunoCep?.message}
           />
         )}
       />

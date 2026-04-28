@@ -6,7 +6,7 @@ export enum CursoPeriodo {
 }
 
 export interface Curso {
-  cursoId: string;
+  cursoId?: string;
   cursoNome: string; 
   cursoPeriodo: CursoPeriodo;
   cursoMediaAprovacao?: number; 

@@ -10,7 +10,7 @@ export type BoletimSituacao =
   
 
 export interface Boletim {
-  boletimId: string;
+  boletimId?: string;
   alunoID: string;
   alunoNome: string;            
   disciplinaID: string;

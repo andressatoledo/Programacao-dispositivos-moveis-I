@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+
+enum CursoPeriodo {
+  Matutino
+  Vespertino
+  Noturno
+  Integral
+}
+
+enum BoletimSituacao {
+  Aprovado
+  Reprovado
+  EmRecuperacao
+}
+
+model Aluno {
+  alunoId        String   @id @default(uuid())
+  alunoNome      String
+  alunoMatricula String   @unique
+  alunoEmail     String
+  alunoTelefone  String
+  alunoCep       String
+  alunoEndereco  String
+  alunoCidade    String
+  alunoEstado    String
+
+  cursoId String
+  curso   Curso @relation(fields: [cursoId], references: [cursoId])
+
+  boletins Boletim[]
+
+  alunoCreatedAt DateTime @default(now())
+}
+
+model Professor {
+  professorId              String @id @default(uuid())
+  professorNome            String
+  professorTitulacao       String
+  professorAreaAtuacao     String
+  professorTempoDocencia   Int
+  professorEmail           String
+
+  disciplinas Disciplina[]
+}
+
+model Curso {
+  cursoId          String @id @default(uuid())
+  cursoNome        String
+  cursoPeriodo     CursoPeriodo
+  cursoMediaAprovacao Float?
+  cursoDuracao     Int?
+
+  alunos      Aluno[]
+  disciplinas Disciplina[]
+}
+
+model Disciplina {
+  disciplinaId             String @id @default(uuid())
+  disciplinaNome           String
+  disciplinaCargaHoraria   Int
+  disciplinaSemestre       Int
+
+  professorId String
+  professor   Professor @relation(fields: [professorId], references: [professorId])
+
+  cursoId String
+  curso   Curso @relation(fields: [cursoId], references: [cursoId])
+
+  boletins Boletim[]
+}
+
+model Boletim {
+  boletimId String @id @default(uuid())
+
+  alunoId String
+  aluno   Aluno @relation(fields: [alunoId], references: [alunoId])
+
+  disciplinaId String
+  disciplina   Disciplina @relation(fields: [disciplinaId], references: [disciplinaId])
+
+  boletimNota1 Float
+  boletimNota2 Float
+  boletimMedia Float
+
+  boletimSituacao BoletimSituacao
+
+  boletimCreatedAt DateTime @default(now())
+}
+
+enum Role {
+  admin
+  professor
+  aluno
+}
+
+model Usuario {
+  usuarioId        String   @id @default(uuid())
+  usuarioNome      String
+  usuarioEmail     String   @unique
+  usuarioSenha     String
+  usuarioRole      Role     @default(aluno) 
+
+  usuarioCreatedAt DateTime @default(now())
+  usuarioUpdatedAt DateTime @updatedAt
+}

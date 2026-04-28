@@ -1,5 +1,5 @@
 export interface Disciplina {
-  disciplinaId: string;
+  disciplinaId?: string;
   disciplinaNome: string;
   disciplinaCargaHoraria: number;
   disciplinaSemestre: number;

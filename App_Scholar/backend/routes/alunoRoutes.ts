@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { AlunoController } from '../controllers/alunoController';
+
+const router = Router();
+
+router.get('/', AlunoController.listar);
+router.get('/combo', AlunoController.combo);
+router.get('/:id', AlunoController.buscarPorId);
+router.post('/', AlunoController.criar);
+router.put('/:id', AlunoController.atualizar);
+router.delete('/:id', AlunoController.deletar);
+
+export default router;
