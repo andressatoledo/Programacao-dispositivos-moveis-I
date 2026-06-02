@@ -27,6 +27,7 @@ export const DisciplinaService = {
   },
 
   async atualizar(id: string, dados: Partial<Disciplina>): Promise<Disciplina> {
+    console.log("Atualizando disciplina com ID:", id, "e dados:", dados);
     const response = await api.put<Disciplina>(`${ENDPOINT}/${id}`, dados);
     return response.data;
   },

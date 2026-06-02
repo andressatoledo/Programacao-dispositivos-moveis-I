@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {BoletimSituacaoOptions } from '../types/boletim';
 
 export const boletimSchema = z.object({
   alunoID: z.string().min(1, "Aluno é obrigatório"),
@@ -7,8 +8,8 @@ export const boletimSchema = z.object({
   boletimNota2: z.coerce.number().min(0, "Nota 2 é obrigatória").max(10, "Máximo 10"),
 
   //Fazer o cálculo posteriomente
-  boletimMedia: z.coerce.number().optional(),
-  boletimSituacao: z.string().optional(),
+  boletimMedia: z.coerce.number(),
+  boletimSituacao: z.enum(BoletimSituacaoOptions),
 });
 
 export type BoletimFormData = z.infer<typeof boletimSchema>;

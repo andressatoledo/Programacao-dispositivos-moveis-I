@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") 
+  url      = env("DATABASE_URL")
 }
 
 enum CursoPeriodo {
@@ -15,50 +15,64 @@ enum CursoPeriodo {
 }
 
 enum BoletimSituacao {
+  NaoCursado
+  EmAndamento
   Aprovado
   Reprovado
   EmRecuperacao
+  Trancado
+}
+
+enum Role {
+  admin
+  professor
+  aluno
 }
 
 model Aluno {
   alunoId        String   @id @default(uuid())
   alunoNome      String
   alunoMatricula String   @unique
-  alunoEmail     String
+  alunoEmail     String   @unique
   alunoTelefone  String
   alunoCep       String
   alunoEndereco  String
   alunoCidade    String
   alunoEstado    String
+  alunoSemestreAtual Int @default(1)
 
   cursoId String
   curso   Curso @relation(fields: [cursoId], references: [cursoId])
 
   boletins Boletim[]
 
+  usuario Usuario? @relation("UsuarioAluno")
+
   alunoCreatedAt DateTime @default(now())
 }
 
 model Professor {
-  professorId              String @id @default(uuid())
-  professorNome            String
-  professorTitulacao       String
-  professorAreaAtuacao     String
-  professorTempoDocencia   Int
-  professorEmail           String
+  professorId            String @id @default(uuid())
+  professorNome          String
+  professorTitulacao     String
+  professorAreaAtuacao   String
+  professorTempoDocencia Int
+  professorEmail         String @unique
 
   disciplinas Disciplina[]
+
+  usuario Usuario? @relation("UsuarioProfessor")
 }
 
 model Curso {
-  cursoId          String @id @default(uuid())
-  cursoNome        String
-  cursoPeriodo     CursoPeriodo
-  cursoMediaAprovacao Float?
-  cursoDuracao     Int?
+  cursoId              String @id @default(uuid())
+  cursoNome            String @unique
+  cursoPeriodo         CursoPeriodo
+  cursoMediaAprovacao  Float?
+  cursoDuracao         Int?
 
-  alunos      Aluno[]
-  disciplinas Disciplina[]
+  alunos       Aluno[]
+  disciplinas  Disciplina[]
 }
 
 model Disciplina {
@@ -66,6 +80,7 @@ model Disciplina {
   disciplinaNome           String
   disciplinaCargaHoraria   Int
   disciplinaSemestre       Int
+  disciplinaAtiva Boolean @default(true)
 
   professorId String
   professor   Professor @relation(fields: [professorId], references: [professorId])
@@ -94,18 +109,20 @@ model Boletim {
   boletimCreatedAt DateTime @default(now())
 }
 
-enum Role {
-  admin
-  professor
-  aluno
-}
-
 model Usuario {
-  usuarioId        String   @id @default(uuid())
-  usuarioNome      String
-  usuarioEmail     String   @unique
-  usuarioSenha     String
-  usuarioRole      Role     @default(aluno) 
+  usuarioId    String @id @default(uuid())
+  usuarioNome  String
+  usuarioEmail String @unique
+  usuarioSenha String
+
+  usuarioRole   Role    @default(aluno)
+  usuarioAtivo  Boolean @default(true)
+
+  alunoId String? @unique
+  aluno   Aluno? @relation("UsuarioAluno", fields: [alunoId], references: [alunoId])
+
+  professorId String? @unique
+  professor   Professor? @relation("UsuarioProfessor", fields: [professorId], references: [professorId])
 
   usuarioCreatedAt DateTime @default(now())
   usuarioUpdatedAt DateTime @updatedAt

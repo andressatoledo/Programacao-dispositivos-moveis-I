@@ -9,7 +9,7 @@ export class CursoController {
       const cursos = await prisma.curso.findMany();
       return res.json(cursos);
     } catch (error) {
-      console.error("❌ Erro ao listar cursos:", error);
+      console.error("Erro ao listar cursos:", error);
       return res.status(500).json({ error: "Erro ao listar cursos" });
     }
   }
@@ -19,7 +19,7 @@ export class CursoController {
       const id = String(req.params.id);
 
       const curso = await prisma.curso.findUnique({
-        where: { cursoId: id }, // ✅ CORRIGIDO
+        where: { cursoId: id }, 
       });
 
       if (!curso) {
@@ -28,7 +28,7 @@ export class CursoController {
 
       return res.json(curso);
     } catch (error) {
-      console.error("❌ Erro ao buscar curso:", error);
+      console.error("Erro ao buscar curso:", error);
       return res.status(500).json({ error: "Erro ao buscar curso" });
     }
   }
@@ -37,8 +37,8 @@ export class CursoController {
     try {
       const cursos = await prisma.curso.findMany({
         select: {
-          cursoId: true,      // ✅ CORRIGIDO
-          cursoNome: true,    // ✅ CORRIGIDO
+          cursoId: true,      
+          cursoNome: true,    
         },
       });
 
@@ -49,7 +49,7 @@ export class CursoController {
 
       return res.json(combo);
     } catch (error) {
-      console.error("❌ Erro ao gerar combo:", error);
+      console.error("Erro ao gerar combo:", error);
       return res.status(500).json({ error: "Erro ao gerar combo" });
     }
   }
@@ -62,7 +62,7 @@ export class CursoController {
 
       return res.status(201).json(curso);
     } catch (error) {
-      console.error("❌ Erro ao criar curso:", error);
+      console.error("Erro ao criar curso:", error);
       return res.status(500).json({ error: "Erro ao criar curso" });
     }
   }
@@ -72,13 +72,13 @@ export class CursoController {
       const id = String(req.params.id);
 
       const curso = await prisma.curso.update({
-        where: { cursoId: id }, // ✅ CORRIGIDO
+        where: { cursoId: id }, 
         data: req.body,
       });
 
       return res.json(curso);
     } catch (error) {
-      console.error("❌ Erro ao atualizar curso:", error);
+      console.error("Erro ao atualizar curso:", error);
       return res.status(500).json({ error: "Erro ao atualizar curso" });
     }
   }

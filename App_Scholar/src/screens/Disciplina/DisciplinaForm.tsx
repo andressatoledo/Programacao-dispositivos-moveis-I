@@ -90,7 +90,7 @@ export function DisciplinaForm({ route, navigation }: DisciplinaFormProps) {
 
       <Controller
         control={control}
-        name="professorID"
+        name="professorId"
         render={({ field }) => (
           <InputCombo
             label="Professor *"
@@ -99,14 +99,14 @@ export function DisciplinaForm({ route, navigation }: DisciplinaFormProps) {
             loading={loadingProfessores}
             onChange={field.onChange}
             disabled={screen.readOnly}
-            error={errors.professorID?.message}
+            error={errors.professorId?.message}
           />
         )}
       />
 
       <Controller
         control={control}
-        name="cursoID"
+        name="cursoId"
         render={({ field }) => (
           <InputCombo
             label="Curso *"
@@ -115,7 +115,7 @@ export function DisciplinaForm({ route, navigation }: DisciplinaFormProps) {
             loading={loadingCursos}
             onChange={field.onChange}
             disabled={screen.readOnly}
-            error={errors.cursoID?.message}
+            error={errors.cursoId?.message}
           />
         )}
       />

@@ -47,7 +47,7 @@ export const CardBoletim = ({ item }: CardBoletimProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.disciplina}>{item.disciplinaNome}</Text>
+        <Text style={styles.disciplina}>{item.disciplina.disciplinaNome}</Text>
         <View style={[styles.badge, { backgroundColor: config.bg }]}>
           <Text style={[styles.badgeText, { color: config.color }]}>
             {item.boletimSituacao}

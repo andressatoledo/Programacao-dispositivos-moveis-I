@@ -7,22 +7,30 @@ import { Form } from "../../components/Form/Form";
 import { cadastrosConfig } from "../../config/cadastros";
 import { dashboardResumoConfig } from "../../config/dashboardResumo";
 import { useAuth } from "../../hooks/Auth/useAuth";
+import { useDashboardResumo } from "@/src/hooks/Outros/useDashboardResume";
 
 export default function Home() {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const resumo = useDashboardResumo();
 
-  if (!user?.usuarioRole) return null;
+  if (!user?.role) return null;
 
-  const userRole = user.usuarioRole;
-
+  const userRole = user.role;
+ 
+  
   const cadastrosFiltrados = cadastrosConfig.filter((item) =>
     item.roles.includes(userRole),
   );
 
-  const resumoFiltrado = dashboardResumoConfig.filter((item) =>
-    item.roles.includes(userRole),
-  );
+  const resumoFiltrado = dashboardResumoConfig
+  .filter((item) => item.roles.includes(userRole))
+  .map((item) => ({
+    ...item,
+    value: resumo[item.resumoKey] ?? 0,
+  }));
+
+  
 
   return (
     <Form>
@@ -30,7 +38,7 @@ export default function Home() {
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
         {resumoFiltrado.map((item) => (
-          <ResumoCard key={item.label} {...item} />
+          <ResumoCard key={item.resumoKey} {...item} />
         ))}
       </View>
 

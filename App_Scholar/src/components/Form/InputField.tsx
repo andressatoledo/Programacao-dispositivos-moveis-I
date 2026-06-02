@@ -120,7 +120,7 @@ export function InputField({
         >
           {icon && iconPosition === 'top' && (
             <MaterialCommunityIcons
-              name={icon as any} // 🔥 CORRIGIDO
+              name={icon as any} 
               size={18}
               color={theme.colors.detail}
             />

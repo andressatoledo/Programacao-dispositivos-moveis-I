@@ -49,10 +49,10 @@ export function DashboardHeader({ Titulo, Subtitulo }: DashboardHeaderProps) {
 
           <View>
             <Text style={{ fontWeight: 'bold', color: theme.colors.text }}>
-              {Titulo ? Titulo : `Bem-vindo, ${user?.usuarioNome || 'Usuário'}`}
+              {Titulo ? Titulo : `Bem-vindo, ${user?.nome || 'Usuário'}`}
             </Text>
             <Text style={{ color: theme.colors.destaque }}>
-              {Subtitulo ? Subtitulo : user?.usuarioRole}
+              {Subtitulo ? Subtitulo : user?.role}
             </Text>
           </View>
         </View>

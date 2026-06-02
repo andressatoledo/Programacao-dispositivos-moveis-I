@@ -1,8 +1,8 @@
 // src/config/dashboardResumo.ts
 
 export type ResumoItem = {
+  resumoKey: string;
   label: string;
-  value: number;
   icon: string;
   color: string;
   roles: ('aluno' | 'professor' | 'admin')[];
@@ -10,31 +10,31 @@ export type ResumoItem = {
 
 export const dashboardResumoConfig: ResumoItem[] = [
   {
+    resumoKey: 'alunos',
     label: 'Alunos',
-    value: 2,
     icon: 'account-group',
     color: '#4CAF50',
     roles: ['admin', 'professor'],
   },
   {
+    resumoKey: 'professores',
     label: 'Professores',
-    value: 3,
     icon: 'school',
     color: '#FF9800',
-    roles: ['admin', 'aluno'],
+    roles: ['admin'],
   },
   {
+    resumoKey: 'disciplinas',
     label: 'Disciplinas',
-    value: 3,
     icon: 'book-open-variant',
     color: '#2196F3',
     roles: ['admin', 'professor', 'aluno'],
   },
   {
+    resumoKey: 'boletins',
     label: 'Boletins',
-    value: 4,
     icon: 'file-document-outline',
     color: '#FF5722',
-    roles: ['admin', ],
+    roles: ['admin'],
   },
 ];

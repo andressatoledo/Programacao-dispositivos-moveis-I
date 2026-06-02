@@ -10,6 +10,7 @@ import { ProfessorFormData } from "../../schemas/professor.schema";
 import { useMensagem } from "../../hooks/Outros/useMensagem";
 import { TypeMessage } from "@/src/types/Outros/messageType";
 import { navigateWithDelay } from "../../utils/navigateWithDelay";
+import { getErrorMessage } from "@/src/utils/getErrorMessage";
 
 type ProfessorFormProps = NativeStackScreenProps<RootStackParamList, "ProfessorForm">;
 
@@ -31,10 +32,12 @@ export function ProfessorForm({ route, navigation }: ProfessorFormProps) {
       const acao = mode === "create" ? "cadastrado" : "atualizado";
       showMessage(`Professor ${acao} com sucesso.`, TypeMessage.success);
       await navigateWithDelay(() => navigation.goBack());
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || "Erro ao salvar os dados do professor.";
-      showMessage(msg, TypeMessage.error);
-    }
+    } catch (error) {
+  showMessage(
+    getErrorMessage(error),
+    TypeMessage.error
+  );
+}
   };
 
   return (
@@ -104,7 +107,7 @@ export function ProfessorForm({ route, navigation }: ProfessorFormProps) {
             label="E-mail *"
             value={field.value}
             onChangeText={field.onChange}
-            editable={!screen.readOnly}
+            editable={screen.isCreate}
             keyboardType="email-address"
             error={errors.professorEmail?.message}
           />

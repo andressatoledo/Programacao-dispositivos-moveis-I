@@ -1,4 +1,4 @@
-import { ComboSource } from '../../../shared/types/Outros/comboOptions';
+import { ComboSource } from '../../types/Outros/comboOptions';
 
 export type FilterType =
   | 'text'

@@ -2,20 +2,23 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useMemo } from 'react';
 
-import { boletimSchema, BoletimFormData } from '../../schemas/boletim.schema';
+import {
+  boletimSchema,
+  type BoletimFormData,
+} from '../../schemas/boletim.schema';
+
 import { Mode } from '../../types/Outros/mode';
 import { useScreenMode } from '../../hooks/useScreenMode';
-
+import { BoletimService } from '../../services/boletimService';
+import {BoletimInput} from '../../types/boletim';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/types';
-// import { BoletimService } from '../../services/boletimService';
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
 export function useBoletimAdminForm(
   mode: Mode,
-  alunoId?: string,
-  disciplinaId?: string,
+  boletimId?: string,
   navigation?: Navigation
 ) {
   const screen = useScreenMode(mode);
@@ -24,19 +27,12 @@ export function useBoletimAdminForm(
   const form = useForm<BoletimFormData>({
     resolver: zodResolver(boletimSchema),
     defaultValues: {
-      alunoID: alunoId || '',
-      disciplinaID: disciplinaId || '',
+      alunoID: '',
+      disciplinaID: '',
       boletimNota1: 0,
       boletimNota2: 0,
       boletimMedia: 0,
       boletimSituacao: 'Em Recuperação',
-
-      // alunoID: '',
-      // disciplinaID: '',
-      // boletimNota1: 0,
-      // boletimNota2: 0,
-      // boletimMedia: 0,
-      // boletimSituacao: 'Em Recuperação',
     },
   });
 
@@ -45,17 +41,16 @@ export function useBoletimAdminForm(
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = form;
 
+  const nota1 = watch('boletimNota1');
+  const nota2 = watch('boletimNota2');
 
-  const n1 = watch('boletimNota1');
-  const n2 = watch('boletimNota2');
-
-  const media = useMemo(() => {
-    if (n1 == null || n2 == null) return 0;
-    return (Number(n1) + Number(n2)) / 2;
-  }, [n1, n2]);
+  const media = useMemo<number>(() => {
+  return (Number(nota1 || 0) + Number(nota2 || 0)) / 2;
+}, [nota1, nota2]);
 
   const situacao = useMemo(() => {
     if (media >= 7) return 'Aprovado';
@@ -64,43 +59,45 @@ export function useBoletimAdminForm(
   }, [media]);
 
   useEffect(() => {
-    form.setValue('boletimMedia', media);
-    form.setValue('boletimSituacao', situacao);
-  }, [media, situacao]);
+  setValue('boletimMedia', media);
+  setValue('boletimSituacao', situacao);
+}, [media, situacao, setValue]);
 
-  // 🔥 salvar (padrão igual seu)
   const saveAll = async (data: BoletimFormData) => {
-    setLoading(true);
-    console.warn("Dados enviados para simulação:", data);
+  setLoading(true);
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+  try {
+    const payload: BoletimInput = {
+      ...data,
+      boletimMedia: data.boletimMedia ?? media,
+    };
 
-      // if (isCreate) {
-      //   await BoletimService.criar(data);
-      // } else if (alunoId && disciplinaId) {
-      //   await BoletimService.atualizar(alunoId, disciplinaId, data);
-      // }
-
-    } catch (error: any) {
-      console.error("Erro ao salvar boletim:", error);
-      throw error;
-    } finally {
-      setLoading(false);
+    if (isCreate) {
+      await BoletimService.criar(payload);
+    } else if (boletimId) {
+      await BoletimService.atualizar(boletimId, payload);
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    // if (!alunoId || !disciplinaId || isCreate) return;
+    if (!boletimId || isCreate) return;
 
-    // setLoading(true);
-    // BoletimService.buscarPorAlunoEDisciplina(alunoId, disciplinaId)
-    //   .then(dados => reset(dados))
-    //   .catch(error => {
-    //     console.error("Erro ao carregar boletim:", error);
-    //   })
-    //   .finally(() => setLoading(false));
-  }, [alunoId, disciplinaId, isCreate, reset, setLoading]);
+    setLoading(true);
+
+    BoletimService.buscarPorId(boletimId)
+      .then(dados => {
+        reset(dados);
+      })
+      .catch(error => {
+        console.error('Erro ao carregar boletim:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [boletimId, isCreate, reset, setLoading]);
 
   return {
     control,

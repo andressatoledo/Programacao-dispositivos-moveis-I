@@ -5,7 +5,16 @@ export const professorSchema = z.object({
   professorTitulacao: z.string().min(1, "Titulação é obrigatória"),
   professorAreaAtuacao: z.string().min(1, "Área de atuação é obrigatória"),
   professorTempoDocencia: z.coerce.number().min(0, "Tempo de docência é obrigatório"),
-  professorEmail: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
+  professorEmail: z
+  .string()
+  .min(1, "E-mail é obrigatório")
+  .email("E-mail inválido")
+  .refine(
+    (email) => email.toLowerCase().endsWith("@appscholar.com"),
+    {
+      message: "O e-mail deve pertencer ao domínio @appscholar.com",
+    }
+  ),
 });
 
 export type ProfessorFormData = z.infer<typeof professorSchema>;

@@ -6,13 +6,6 @@ interface ComboOption {
   value: string;
 }
 
-// Mock temporário seguindo a interface ideal
-const CURSOS_MOCK: ComboOption[] = [
-  { label: 'Análise e Desenvolvimento de Sistemas', value: '1' },
-  { label: 'Engenharia de Software', value: '2' },
-  { label: 'Ciência da Computação', value: '3' },
-  { label: 'Sistemas de Informação', value: '4' },
-];
 
 export function useCursoCombo() {
   const [optionsCursos, setOptions] = useState<ComboOption[]>([]);
@@ -32,8 +25,7 @@ export function useCursoCombo() {
         setOptions(mapped);
       } catch (error) {
         console.warn("Usando dados de mock (Falha na API ou ambiente local)", error);
-        // Em caso de erro (ou enquanto a API não existe), injetamos o mock
-        setOptions(CURSOS_MOCK);
+       
       } finally {
         setLoading(false);
       }

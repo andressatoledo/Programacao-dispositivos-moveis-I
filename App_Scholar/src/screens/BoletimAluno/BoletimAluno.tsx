@@ -13,10 +13,9 @@ import { FiltroBoletimAluno } from './filtro';
 
 
 export function BoletimAluno() {
-  const alunoIdMock = "1";
   const { visible, abrir, fechar } = useFilterSheet();
   const { filters, setFilters, clearFilters } = useGenericFilter<any>();
-  const { dados, buscarBoletim } = useBoletimAluno(alunoIdMock);
+  const { dados, buscarBoletim } = useBoletimAluno();
   const [busca, setBusca] = useState('');
   
   useFocusEffect(
@@ -39,6 +38,7 @@ export function BoletimAluno() {
       
       
         {dados.map(item => (
+          
           <CardBoletim key={item.boletimId} item={item} />
         ))}
      

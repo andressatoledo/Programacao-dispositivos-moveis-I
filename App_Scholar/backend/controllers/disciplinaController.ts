@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { ComboOption } from "../type/comboOption";
+import { BoletimSituacao } from "@prisma/client";
+import { BoletimService } from "../services/boletimService";
 
 export class DisciplinaController {
 
@@ -15,7 +17,7 @@ export class DisciplinaController {
 
       return res.json(disciplinas);
     } catch (error) {
-      console.error("❌ Erro ao listar disciplinas:", error);
+      console.error("Erro ao listar disciplinas:", error);
       return res.status(500).json({ error: "Erro ao listar disciplinas" });
     }
   }
@@ -25,7 +27,7 @@ export class DisciplinaController {
       const id = String(req.params.id);
 
       const disciplina = await prisma.disciplina.findUnique({
-        where: { disciplinaId: id }, // ✅ CORRIGIDO
+        where: { disciplinaId: id }, 
         include: {
           professor: true,
           curso: true,
@@ -38,7 +40,7 @@ export class DisciplinaController {
 
       return res.json(disciplina);
     } catch (error) {
-      console.error("❌ Erro ao buscar disciplina:", error);
+      console.error("Erro ao buscar disciplina:", error);
       return res.status(500).json({ error: "Erro ao buscar disciplina" });
     }
   }
@@ -49,9 +51,13 @@ export class DisciplinaController {
         data: req.body,
       });
 
+      await BoletimService.sincronizarCurso(
+        disciplina.cursoId,
+      );
+
       return res.status(201).json(disciplina);
     } catch (error) {
-      console.error("❌ Erro ao criar disciplina:", error);
+      console.error("Erro ao criar disciplina:", error);
       return res.status(500).json({ error: "Erro ao criar disciplina" });
     }
   }
@@ -61,13 +67,17 @@ export class DisciplinaController {
       const id = String(req.params.id);
 
       const disciplina = await prisma.disciplina.update({
-        where: { disciplinaId: id }, // ✅ CORRIGIDO
+        where: { disciplinaId: id }, 
         data: req.body,
       });
 
+      await BoletimService.sincronizarCurso(
+        disciplina.cursoId,
+      );
+
       return res.json(disciplina);
     } catch (error) {
-      console.error("❌ Erro ao atualizar disciplina:", error);
+      console.error(" Erro ao atualizar disciplina:", error);
       return res.status(500).json({ error: "Erro ao atualizar disciplina" });
     }
   }
@@ -76,13 +86,16 @@ export class DisciplinaController {
     try {
       const id = String(req.params.id);
 
-      await prisma.disciplina.delete({
-        where: { disciplinaId: id }, // ✅ CORRIGIDO
+      await prisma.disciplina.update({
+        where: { disciplinaId: id },
+        data: {
+          disciplinaAtiva: false,
+        },
       });
 
       return res.status(204).send();
     } catch (error) {
-      console.error("❌ Erro ao deletar disciplina:", error);
+      console.error("Erro ao deletar disciplina:", error);
       return res.status(500).json({ error: "Erro ao deletar disciplina" });
     }
   }
@@ -101,14 +114,18 @@ export class DisciplinaController {
       });
 
       const combo: ComboOption[] = disciplinas.map((d) => ({
-        value: d.disciplinaId, // ✅ CORRIGIDO
-        label: `${d.disciplinaNome} - ${d.curso?.cursoNome ?? ""}`, // ✅ CORRIGIDO
+        value: d.disciplinaId, 
+        label: `${d.disciplinaNome} - ${d.curso?.cursoNome ?? ""}`, 
       }));
 
       return res.json(combo);
     } catch (error) {
-      console.error("❌ Erro ao gerar combo de disciplinas:", error);
+      console.error("Erro ao gerar combo de disciplinas:", error);
       return res.status(500).json({ error: "Erro ao gerar combo" });
     }
   }
+
+
+  
+  
 }

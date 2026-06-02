@@ -3,10 +3,10 @@ export interface Disciplina {
   disciplinaNome: string;
   disciplinaCargaHoraria: number;
   disciplinaSemestre: number;
-  professorID: string;       
-  professorNome: string;     
-  cursoID: string;           
-  cursoNome: string;         
+  professorId: string;       
+  professorNome?: string;     
+  cursoId: string;           
+  cursoNome?: string;         
   
 }
 
@@ -15,9 +15,9 @@ export interface DisciplinaFiltro {
   disciplinaNome?: string;
   disciplinaCargaHoraria?: number;
   disciplinaSemestre?: number;
-  professorID?: string;       
+  professorId?: string;       
   professorNome?: string;     
-  cursoID?: string;           
+  cursoId?: string;           
   cursoNome?: string;         
   
 }

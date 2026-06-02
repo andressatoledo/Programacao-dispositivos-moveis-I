@@ -2,21 +2,24 @@ import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/types";
 import { Controller } from "react-hook-form";
+
 import { InputField } from "../../components/Form/InputField";
+import { InputCombo } from "../../components/Form/InputCombo";
 import { Button } from "../../components/Form/Button";
 import { Form } from "../../components/Form/Form";
-import { InputCombo } from "../../components/Form/InputCombo";
+
 import { useAlunoForm } from "../../hooks/Aluno/useAlunoForm";
 import { AlunoFormData } from "../../schemas/aluno.schema";
+
 import { formatar } from "../../utils/formatar";
 import { useMensagem } from "../../hooks/Outros/useMensagem";
 import { TypeMessage } from "@/src/types/Outros/messageType";
-import {navigateWithDelay} from "../../utils/navigateWithDelay";
+import { navigateWithDelay } from "../../utils/navigateWithDelay";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
-type AlunoFormProps = NativeStackScreenProps<RootStackParamList, "AlunoForm">;
+type Props = NativeStackScreenProps<RootStackParamList, "AlunoForm">;
 
-export function AlunoForm({ route, navigation }: AlunoFormProps) {
+export function AlunoForm({ route, navigation }: Props) {
   const { mode, alunoId } = route.params;
 
   const {
@@ -25,30 +28,38 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
     screen,
     handleSubmit,
     saveAll,
+
     optionsCursos,
     loadingCursos,
-  } = useAlunoForm(mode, alunoId, navigation);
 
+    optionsEstados,
+    optionsCidades,
+    loadingEstados,
+    loadingCidades,
+    estado,
+  handleEstadoChange,
+  } = useAlunoForm(mode, alunoId);
 
   const showMessage = useMensagem();
-
-  const onSubmit = async (data: AlunoFormData) => {
-  try {
-    await saveAll(data);
-
-    showMessage(
-      `Aluno ${mode === "create" ? "cadastrado" : "atualizado"} com sucesso.`,
-      TypeMessage.success
-    );
-
-    await navigateWithDelay(() => navigation.goBack());
-
-  } catch (error: any) {
-    showMessage(getErrorMessage(error), TypeMessage.error);
-  }
-};
-
   
+  const onSubmit = async (data: AlunoFormData) => {
+    try {
+      await saveAll(data);
+
+      showMessage(
+        `Aluno ${mode === "create" ? "cadastrado" : "atualizado"} com sucesso.`,
+        TypeMessage.success
+      );
+
+      await navigateWithDelay(() => navigation.goBack());
+    } catch (error) {
+      showMessage(
+        getErrorMessage(error),
+        TypeMessage.error
+      );
+    }
+  };
+
   return (
     <Form>
       <Controller
@@ -100,11 +111,10 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
         name="alunoEmail"
         render={({ field }) => (
           <InputField
-            label="E-mail institucional *"
+            label="E-mail *"
             value={field.value}
-            // onChangeText={(text) => field.onChange(formatar.email(text))}
             onChangeText={(text) => field.onChange(formatar.email(text) || "")}
-            editable={!screen.readOnly}
+            editable={screen.isCreate}
             keyboardType="email-address"
             error={errors.alunoEmail?.message}
           />
@@ -156,13 +166,33 @@ export function AlunoForm({ route, navigation }: AlunoFormProps) {
 
       <Controller
         control={control}
+        name="alunoEstado"
+        render={({ field }) => (
+          <InputCombo
+            label="Estado *"
+            value={field.value}
+            options={optionsEstados}
+            loading={loadingEstados}
+            onChange={handleEstadoChange}
+            disabled={screen.readOnly}
+            error={errors.alunoEstado?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
         name="alunoCidade"
         render={({ field }) => (
-          <InputField
+          <InputCombo
             label="Cidade *"
             value={field.value}
-            onChangeText={field.onChange}
-            editable={!screen.readOnly}
+            options={optionsCidades}
+            loading={loadingCidades}
+            onChange={field.onChange}
+            disabled={
+              screen.readOnly || !estado
+            }
             error={errors.alunoCidade?.message}
           />
         )}

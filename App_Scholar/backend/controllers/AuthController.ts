@@ -3,72 +3,130 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../lib/prisma";
 
-const SECRET = process.env.JWT_SECRET || "default_secret";
+const SECRET: string = process.env.JWT_SECRET as string;
+
+if (!SECRET) {
+  throw new Error("JWT_SECRET não configurado no ambiente");
+}
 
 export class AuthController {
 
+  /**
+   * LOGIN
+   */
   static async login(req: Request, res: Response) {
     try {
       const { email, senha } = req.body;
 
+      if (!email || !senha) {
+        return res.status(400).json({
+          error: "Email e senha são obrigatórios",
+        });
+      }
+
       const usuario = await prisma.usuario.findUnique({
-        where: { usuarioEmail: email }, // ✅ CORRIGIDO
+        where: { usuarioEmail: email },
       });
 
       if (!usuario) {
-        return res.status(401).json({ error: "Usuário não encontrado" });
+        return res.status(401).json({
+          error: "Credenciais inválidas",
+        });
       }
 
       const senhaValida = await bcrypt.compare(
         senha,
-        usuario.usuarioSenha // ✅ CORRIGIDO
+        usuario.usuarioSenha
       );
 
       if (!senhaValida) {
-        return res.status(401).json({ error: "Senha inválida" });
+        return res.status(401).json({
+          error: "Credenciais inválidas",
+        });
       }
 
       const token = jwt.sign(
         {
-          id: usuario.usuarioId,     // ✅ CORRIGIDO
-          role: usuario.usuarioRole // ✅ CORRIGIDO
+          sub: usuario.usuarioId,
+          role: usuario.usuarioRole,
+          email: usuario.usuarioEmail,
+          alunoId: usuario.alunoId,
+          professorId: usuario.professorId,
         },
         SECRET,
-        { expiresIn: "1d" }
+        {
+          expiresIn: "1d",
+        }
       );
 
       return res.json({
         token,
         usuario: {
-          nome: usuario.usuarioNome,     // ✅ CORRIGIDO
-          role: usuario.usuarioRole,     // ✅ CORRIGIDO
+          id: usuario.usuarioId,
+          nome: usuario.usuarioNome,
+          email: usuario.usuarioEmail,
+          role: usuario.usuarioRole,
+          alunoId: usuario.alunoId,
+          professorId: usuario.professorId,
         },
       });
 
     } catch (error) {
-      console.error("❌ Erro no login:", error);
-      return res.status(500).json({ error: "Erro ao realizar login" });
+      console.error("Erro no login:", error);
+      return res.status(500).json({
+        error: "Erro interno no login",
+      });
     }
   }
 
+  /**
+   * REGISTRO
+   */
   static async registrar(req: Request, res: Response) {
     try {
-      const { senha, ...resto } = req.body;
+      const { usuarioNome, usuarioEmail, usuarioSenha, usuarioRole } = req.body;
 
-      const hash = await bcrypt.hash(senha, 10);
+      if (!usuarioNome || !usuarioEmail || !usuarioSenha) {
+        return res.status(400).json({
+          error: "Nome, email e senha são obrigatórios",
+        });
+      }
+
+      const usuarioExistente = await prisma.usuario.findUnique({
+        where: { usuarioEmail },
+      });
+
+      if (usuarioExistente) {
+        return res.status(409).json({
+          error: "Email já está em uso",
+        });
+      }
+
+      const hash = await bcrypt.hash(usuarioSenha, 10);
 
       const usuario = await prisma.usuario.create({
         data: {
-          ...resto,
-          usuarioSenha: hash, // ✅ CORRIGIDO
+          usuarioNome,
+          usuarioEmail,
+          usuarioSenha: hash,
+          usuarioRole: usuarioRole ?? "aluno",
         },
       });
 
-      return res.status(201).json(usuario);
+      return res.status(201).json({
+        id: usuario.usuarioId,
+        nome: usuario.usuarioNome,
+        email: usuario.usuarioEmail,
+        role: usuario.usuarioRole,
+        alunoId: usuario.alunoId,
+        professorId: usuario.professorId,
+      });
 
     } catch (error) {
-      console.error("❌ Erro ao registrar usuário:", error);
-      return res.status(500).json({ error: "Erro ao registrar usuário" });
+      console.error("Erro ao registrar usuário:", error);
+      return res.status(500).json({
+        error: "Erro interno ao registrar usuário",
+      });
     }
   }
 }

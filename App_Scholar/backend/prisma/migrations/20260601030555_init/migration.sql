@@ -61,7 +61,6 @@ CREATE TABLE "Disciplina" (
 
 -- CreateTable
 CREATE TABLE "Boletim" (
-    "id" TEXT NOT NULL,
     "alunoId" TEXT NOT NULL,
     "disciplinaId" TEXT NOT NULL,
     "boletimNota1" DOUBLE PRECISION NOT NULL,
@@ -69,8 +68,9 @@ CREATE TABLE "Boletim" (
     "boletimMedia" DOUBLE PRECISION NOT NULL,
     "boletimSituacao" "BoletimSituacao" NOT NULL,
     "boletimCreatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "boletimId" TEXT NOT NULL,
 
-    CONSTRAINT "Boletim_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Boletim_pkey" PRIMARY KEY ("boletimId")
 );
 
 -- CreateTable
@@ -96,10 +96,10 @@ CREATE UNIQUE INDEX "Usuario_usuarioEmail_key" ON "Usuario"("usuarioEmail");
 ALTER TABLE "Aluno" ADD CONSTRAINT "Aluno_cursoId_fkey" FOREIGN KEY ("cursoId") REFERENCES "Curso"("cursoId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Disciplina" ADD CONSTRAINT "Disciplina_professorId_fkey" FOREIGN KEY ("professorId") REFERENCES "Professor"("professorId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Disciplina" ADD CONSTRAINT "Disciplina_cursoId_fkey" FOREIGN KEY ("cursoId") REFERENCES "Curso"("cursoId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Disciplina" ADD CONSTRAINT "Disciplina_cursoId_fkey" FOREIGN KEY ("cursoId") REFERENCES "Curso"("cursoId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Disciplina" ADD CONSTRAINT "Disciplina_professorId_fkey" FOREIGN KEY ("professorId") REFERENCES "Professor"("professorId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Boletim" ADD CONSTRAINT "Boletim_alunoId_fkey" FOREIGN KEY ("alunoId") REFERENCES "Aluno"("alunoId") ON DELETE RESTRICT ON UPDATE CASCADE;

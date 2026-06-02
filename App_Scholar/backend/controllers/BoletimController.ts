@@ -1,20 +1,23 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
+import { BoletimService } from "../services/boletimService";
 
 export class BoletimController {
-
   static async listar(req: Request, res: Response) {
+    console.log("Listando boletins...",req.query);
     try {
+      const alunoId = req.query.alunoId as string | undefined;
       const boletins = await prisma.boletim.findMany({
+        where: {alunoId},
         include: {
           aluno: true,
           disciplina: true,
         },
       });
-
+      console.log("Boletins encontrados:", boletins);
       return res.json(boletins);
     } catch (error) {
-      console.error("❌ Erro ao listar boletins:", error);
+      console.error("Erro ao listar boletins:", error);
       return res.status(500).json({ error: "Erro ao listar boletins" });
     }
   }
@@ -24,7 +27,7 @@ export class BoletimController {
       const id = String(req.params.id);
 
       const boletim = await prisma.boletim.findUnique({
-        where: { boletimId: id }, 
+        where: { boletimId: id },
         include: {
           aluno: true,
           disciplina: true,
@@ -37,7 +40,7 @@ export class BoletimController {
 
       return res.json(boletim);
     } catch (error) {
-      console.error("❌ Erro ao buscar boletim:", error);
+      console.error("Erro ao buscar boletim:", error);
       return res.status(500).json({ error: "Erro ao buscar boletim" });
     }
   }
@@ -62,77 +65,57 @@ export class BoletimController {
       }
 
       const disciplinas = aluno.boletins.map((b) => ({
-        disciplina: b.disciplina.disciplinaNome, 
-        nota1: b.boletimNota1,                  
-        nota2: b.boletimNota2,                  
-        media: b.boletimMedia,                  
-        situacao: b.boletimSituacao,            
+        disciplina: b.disciplina.disciplinaNome,
+        nota1: b.boletimNota1,
+        nota2: b.boletimNota2,
+        media: b.boletimMedia,
+        situacao: b.boletimSituacao,
       }));
 
       return res.json({
         aluno: aluno.alunoNome,
         disciplinas,
       });
-
     } catch (error) {
-      console.error("❌ Erro ao buscar por matrícula:", error);
+      console.error("Erro ao buscar por matrícula:", error);
       return res.status(500).json({ error: "Erro ao buscar boletim" });
     }
   }
 
   static async criar(req: Request, res: Response) {
     try {
-      const { boletimNota1, boletimNota2 } = req.body;
-
-      const media = (boletimNota1 + boletimNota2) / 2;
-
-      let situacao: "Aprovado" | "Reprovado" | "EmRecuperacao";
-
-      if (media >= 7) situacao = "Aprovado";
-      else if (media >= 5) situacao = "EmRecuperacao";
-      else situacao = "Reprovado";
-
       const boletim = await prisma.boletim.create({
-        data: {
-          ...req.body,
-          boletimMedia: media,          
-          boletimSituacao: situacao,     
-        },
+        data: req.body,
       });
 
-      return res.status(201).json(boletim);
+      const atualizado = await BoletimService.sincronizarBoletim(
+        boletim.boletimId,
+      );
+
+      return res.status(201).json(atualizado);
     } catch (error) {
-      console.error("❌ Erro ao criar boletim:", error);
+      console.error("Erro ao criar boletim:", error);
       return res.status(500).json({ error: "Erro ao criar boletim" });
     }
   }
 
   static async atualizar(req: Request, res: Response) {
     try {
-      const id = String(req.params.id);
+      const boletimId = String(req.params.id);
 
-      const { boletimNota1, boletimNota2 } = req.body;
-
-      const media = (boletimNota1 + boletimNota2) / 2;
-
-      let situacao: "Aprovado" | "Reprovado" | "EmRecuperacao";
-
-      if (media >= 7) situacao = "Aprovado";
-      else if (media >= 5) situacao = "EmRecuperacao";
-      else situacao = "Reprovado";
-
-      const boletim = await prisma.boletim.update({
-        where: { boletimId: id }, // ✅ CORRETO
-        data: {
-          ...req.body,
-          boletimMedia: media,       // ✅ CORRETO
-          boletimSituacao: situacao, // ✅ CORRETO
+      await prisma.boletim.update({
+        where: {
+          boletimId,
         },
+        data: req.body,
       });
 
-      return res.json(boletim);
+      const atualizado =
+        await BoletimService.sincronizarBoletim(boletimId);
+
+      return res.json(atualizado);
     } catch (error) {
-      console.error("❌ Erro ao atualizar boletim:", error);
+      console.error("Erro ao atualizar boletim:", error);
       return res.status(500).json({ error: "Erro ao atualizar boletim" });
     }
   }
@@ -142,12 +125,12 @@ export class BoletimController {
       const id = String(req.params.id);
 
       await prisma.boletim.delete({
-        where: { boletimId: id }, // ✅ CORRETO
+        where: { boletimId: id },
       });
 
       return res.status(204).send();
     } catch (error) {
-      console.error("❌ Erro ao deletar boletim:", error);
+      console.error("Erro ao deletar boletim:", error);
       return res.status(500).json({ error: "Erro ao deletar boletim" });
     }
   }

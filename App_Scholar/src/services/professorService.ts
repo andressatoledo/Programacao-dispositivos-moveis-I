@@ -3,7 +3,7 @@ import { api } from './api';
 import {type ProfessorFiltro, Professor} from '../types/professor';
 import { ComboOption } from '../types/Outros/combo';
 
-const ENDPOINT = '/professors';
+const ENDPOINT = '/professores';
 
 export const ProfessorService = {
   async buscarTodas(filtro?: ProfessorFiltro): Promise<Professor[]> {

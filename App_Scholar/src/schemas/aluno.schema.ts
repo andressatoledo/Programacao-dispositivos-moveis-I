@@ -4,7 +4,16 @@ export const alunoSchema = z.object({
   alunoNome: z.string().min(1, "Nome é obrigatório"),
   alunoMatricula: z.string().min(1, "Matrícula é obrigatória"),
   cursoId: z.string().min(1, "O curso deve ser selecionado"),
-  alunoEmail: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
+  alunoEmail: z
+  .string()
+  .min(1, "E-mail é obrigatório")
+  .email("E-mail inválido")
+  .refine(
+    (email) => email.toLowerCase().endsWith("@aluno.appscholar.com"),
+    {
+      message: "O e-mail deve pertencer ao domínio @aluno.appscholar.com",
+    }
+  ),
   alunoTelefone: z.string().min(1, "Telefone é obrigatório"),
   alunoCep: z
     .string()

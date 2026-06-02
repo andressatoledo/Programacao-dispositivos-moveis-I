@@ -20,3 +20,9 @@ export interface CursoFiltro {
   cursoMediaAprovacao?: number; 
   cursoDuracao?: number; 
 }
+
+
+export const CursoPeriodoOptions = Object.values(CursoPeriodo) as [
+  CursoPeriodo,
+  ...CursoPeriodo[]
+];

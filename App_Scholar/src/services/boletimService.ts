@@ -3,11 +3,12 @@ import { api } from './api';
 import {type BoletimFiltro, Boletim} from '../types/boletim';
 import { ComboOption } from '../types/Outros/combo';
 
-const ENDPOINT = '/boletims';
+const ENDPOINT = '/boletins';
 
 export const BoletimService = {
   async buscarTodas(filtro?: BoletimFiltro): Promise<Boletim[]> {
     const response = await api.get<Boletim[]>(ENDPOINT, { params: filtro});
+    console.log("Resposta do servidor:", response.data);
     return response.data;
   },
 
