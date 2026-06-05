@@ -21,7 +21,7 @@ export function CarteiraHeader({
   onAddPress,
   placeholder = 'Buscar...',
   hideAdd = false,
-  hideFilter = false,
+  hideFilter = true,
   hideSearch = false,
 }: Props) {
   return (

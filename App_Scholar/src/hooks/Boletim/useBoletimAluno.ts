@@ -1,46 +1,95 @@
-import { useState, useCallback, useEffect } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
+
 import { BoletimService } from "../../services/boletimService";
-import { Boletim, BoletimFiltro } from "../../types/boletim";
-import { useAuth } from "../Auth/useAuth";
+
+import {
+  Boletim,
+  BoletimFiltro,
+} from "../../types/boletim";
 
 export function useBoletimAluno() {
-  const { user } = useAuth();
+  const [dadosOriginais, setDadosOriginais] =
+    useState<Boletim[]>([]);
 
-  const alunoId = user?.alunoId;
-  const [dados, setDados] = useState<Boletim[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
   const buscarBoletim = useCallback(
-    async (filtros?: BoletimFiltro) => {
-      if (!alunoId) return;
-
+    async () => {
       setLoading(true);
 
       try {
-        const response = await BoletimService.buscarTodas({
-          ...filtros,
-          alunoId,
-        });
+        const response =
+          await BoletimService.buscarTodas();
 
-        setDados(response);
+        setDadosOriginais(response);
       } catch (error) {
-        console.error("Erro ao buscar boletim:", error);
+        console.error(
+          "Erro ao buscar boletim:",
+          error,
+        );
       } finally {
         setLoading(false);
       }
     },
-    [alunoId]
+
+    [],
   );
 
   useEffect(() => {
-    if (alunoId) {
-      buscarBoletim();
-    }
-  }, [alunoId]);
+    buscarBoletim();
+  }, [buscarBoletim]);
+
+  const filtrarBoletins = useCallback(
+    (
+      busca: string,
+      filtros?: BoletimFiltro,
+    ) => {
+      return dadosOriginais.filter(
+        (item) => {
+          // BUSCA TEXTO
+          const matchBusca =
+            !busca ||
+            item.disciplina?.disciplinaNome
+              ?.toLowerCase()
+              .includes(
+                busca.toLowerCase(),
+              );
+
+          // FILTRO SITUAÇÃO
+          const matchSituacao =
+            !filtros?.boletimSituacao ||
+            item.boletimSituacao ===
+              filtros.boletimSituacao;
+
+          // FILTRO SEMESTRE
+          const matchSemestre =
+            !filtros?.disciplinaSemestre ||
+            item.disciplina
+              ?.disciplinaSemestre ===
+              filtros.disciplinaSemestre;
+
+          return (
+            matchBusca &&
+            matchSituacao &&
+            matchSemestre
+          );
+        },
+      );
+    },
+
+    [dadosOriginais],
+  );
 
   return {
-    dados,
+    dadosOriginais,
     loading,
     buscarBoletim,
+    filtrarBoletins,
   };
 }

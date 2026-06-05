@@ -7,11 +7,11 @@ export function errorMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  console.error("❌ ERRO GLOBAL:", error);
+  console.error("ERRO GLOBAL:", error);
 
   const handled = handlePrismaError(error);
 
   return res.status(handled.status).json({
-    error: handled.message,
-  });
+  message: handled.message,
+});
 }

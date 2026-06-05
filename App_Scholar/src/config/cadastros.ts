@@ -10,6 +10,7 @@ export const cadastrosConfig = [
     routeName: "Aluno",
     roles: ["admin", "professor"] as UserRole[],
   },
+
   {
     icon: "file-document-edit",
     title: "Boletins",

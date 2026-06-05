@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../lib/prisma";
+import { AuthRequest } from "../middlewares/authMiddleware";
 
 const SECRET: string = process.env.JWT_SECRET as string;
 
@@ -10,7 +11,6 @@ if (!SECRET) {
 }
 
 export class AuthController {
-
   /**
    * LOGIN
    */
@@ -34,10 +34,7 @@ export class AuthController {
         });
       }
 
-      const senhaValida = await bcrypt.compare(
-        senha,
-        usuario.usuarioSenha
-      );
+      const senhaValida = await bcrypt.compare(senha, usuario.usuarioSenha);
 
       if (!senhaValida) {
         return res.status(401).json({
@@ -56,7 +53,7 @@ export class AuthController {
         SECRET,
         {
           expiresIn: "1d",
-        }
+        },
       );
 
       return res.json({
@@ -70,7 +67,6 @@ export class AuthController {
           professorId: usuario.professorId,
         },
       });
-
     } catch (error) {
       console.error("Erro no login:", error);
       return res.status(500).json({
@@ -121,12 +117,55 @@ export class AuthController {
         alunoId: usuario.alunoId,
         professorId: usuario.professorId,
       });
-
     } catch (error) {
       console.error("Erro ao registrar usuário:", error);
       return res.status(500).json({
         error: "Erro interno ao registrar usuário",
       });
     }
+  }
+
+  /**
+   * MUDAR SENHA
+   */
+  static async mudarSenha(req: AuthRequest, res: Response) {
+    console.log("user no mudar senha", req.user);
+    const usuarioId = req.user?.sub;
+    console.log(req.body);
+    const { senhaAtual, novaSenha } = req.body;
+
+    const usuario = await prisma.usuario.findUnique({
+      where: { usuarioId },
+    });
+
+    console.log('141');
+    if (!usuario) {
+      return res.status(400).json({
+        message: "Senha atual inválida",
+      });
+    }
+    console.log('147');
+    const senhaValida = await bcrypt.compare(senhaAtual, usuario.usuarioSenha);
+
+    console.log('149');
+    if (!senhaValida) {
+      return res.status(400).json({
+        message: "Senha atual inválida",
+      });
+    }
+    console.log('156');
+    const senhaHash = await bcrypt.hash(novaSenha, 10);
+
+    await prisma.usuario.update({
+      where: { usuarioId },
+
+      data: {
+        usuarioSenha: senhaHash,
+      },
+    });
+
+    return res.json({
+      message: "Senha alterada",
+    });
   }
 }

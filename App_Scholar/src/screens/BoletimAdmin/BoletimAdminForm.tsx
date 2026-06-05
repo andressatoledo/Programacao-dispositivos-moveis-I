@@ -20,18 +20,23 @@ type Props = NativeStackScreenProps<
   "BoletimAdminForm">;
 
 export function BoletimAdminForm({ route, navigation }: Props) {
-  const { mode, alunoId, disciplinaId } = route.params;
+  const { mode, alunoId, disciplinaId, boletimId, disciplinaNome } = route.params;
   const showMessage = useMensagem();
   const { theme } = useTheme();
   
   const {
-    control,
-    errors,
-    media,
-    screen,
-    handleSubmit,
-    saveAll,
-  } = useBoletimAdminForm(mode, alunoId, disciplinaId, navigation);
+  control,
+  errors,
+  media,
+  screen,
+  handleSubmit,
+  saveAll,
+} = useBoletimAdminForm(
+  mode,
+  boletimId,
+  disciplinaId,
+  alunoId
+);
 
 
   const onSubmit = async (data: BoletimFormData) => {
@@ -53,7 +58,7 @@ export function BoletimAdminForm({ route, navigation }: Props) {
   };
 
   return (
-    <Form>
+    <Form title={disciplinaNome || "Boletim"}>
       <Row>
         <View style={{ flex: 1 }}>
           <Controller
@@ -111,7 +116,7 @@ export function BoletimAdminForm({ route, navigation }: Props) {
             color: theme.colors.background,
           }}
         >
-          {media}
+          {media.toFixed(1)}
         </Text>
       </View>
 

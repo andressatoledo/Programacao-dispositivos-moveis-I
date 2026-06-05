@@ -1,61 +1,121 @@
-import React, { useState, useCallback } from 'react';
-import { View } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, {
+  useState,
+  useCallback,
+} from "react";
 
-import { Carteira } from '../../components/Form/Carteira';
-import { CarteiraItem } from '../../components/Form/CarteiraItem';
-import { CarteiraHeader } from '../../components/Form/CarteiraHeader';
-import { FilterSheet } from '../../components/Filtro/FilterSheet';
-import { FakeBottomSheet } from '../../components/Form/FakeButtonSheet';
-import { EmptyCarteira } from '../../components/Feedback/EmptyCarteira';
-import { ConfirmDialog } from '../../components/Feedback/ConfirmDialog';
+import { View } from "react-native";
 
-import { useDisciplina } from '../../hooks/Disciplina/useDisciplina';
-import { useFilterSheet } from '../../hooks/Filter/useFilterSheet';
-import { useGenericFilter } from '../../hooks/Filter/useGenericFilter';
-import { useMensagem } from '../../hooks/Outros/useMensagem';
+import {
+  useNavigation,
+  useFocusEffect,
+} from "@react-navigation/native";
 
-import { Disciplina as TypeDisciplina, DisciplinaFiltro } from '../../types/disciplina';
-import { RootStackParamList } from '../../navigation/types';
-import { TypeMessage } from '@/src/types/Outros/messageType';
-import { FiltroDisciplina } from './filtro';
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-function description(item: TypeDisciplina): string {
+import { Carteira } from "../../components/Form/Carteira";
+
+import { CarteiraItem } from "../../components/Form/CarteiraItem";
+
+import { CarteiraHeader } from "../../components/Form/CarteiraHeader";
+
+import { EmptyCarteira } from "../../components/Feedback/EmptyCarteira";
+
+import { ConfirmDialog } from "../../components/Feedback/ConfirmDialog";
+
+import { useDisciplina } from "../../hooks/Disciplina/useDisciplina";
+
+import { useMensagem } from "../../hooks/Outros/useMensagem";
+
+import { Disciplina as TypeDisciplina } from "../../types/disciplina";
+
+import { RootStackParamList } from "../../navigation/types";
+
+import { TypeMessage } from "@/src/types/Outros/messageType";
+
+/**
+ * DESCRIÇÃO DO CARD
+ */
+function description(
+  item: TypeDisciplina,
+): string {
   return `Semestre: ${item.disciplinaSemestre} • Carga: ${item.disciplinaCargaHoraria}h`;
 }
 
 export function Disciplina() {
-  type DisciplinaNavProp = NativeStackNavigationProp<RootStackParamList, 'Disciplina'>;
-  const navigation = useNavigation<DisciplinaNavProp>();
-  const showMessage = useMensagem();
+  type DisciplinaNavProp =
+    NativeStackNavigationProp<
+      RootStackParamList,
+      "Disciplina"
+    >;
 
-  const { visible, abrir, fechar } = useFilterSheet();
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  
-  const { filters, setFilters, clearFilters } = useGenericFilter<DisciplinaFiltro>();
-  const { dados, buscarDisciplina, deleteDisciplina } = useDisciplina();
-  const [busca, setBusca] = useState('');
+  const navigation =
+    useNavigation<DisciplinaNavProp>();
 
-  const handleConfirmDelete = async () => {
-    if (!selectedId) return;
-    try {
-      await deleteDisciplina(selectedId);
-      showMessage('Disciplina excluída com sucesso.', TypeMessage.success);
-    } catch (error) {
-      showMessage('Erro ao excluir a disciplina.', TypeMessage.error);
-    } finally {
-      setConfirmVisible(false);
-      setSelectedId(null);
-    }
-  };
+  const showMessage =
+    useMensagem();
 
+  /**
+   * MODAL EXCLUSÃO
+   */
+  const [
+    confirmVisible,
+    setConfirmVisible,
+  ] = useState(false);
+
+  const [
+    selectedId,
+    setSelectedId,
+  ] = useState<string | null>(
+    null,
+  );
+
+  /**
+   * HOOK
+   */
+  const {
+    dados,
+    busca,
+    setBusca,
+    buscarDisciplina,
+    deleteDisciplina,
+  } = useDisciplina();
+
+  /**
+   * CARREGA DISCIPLINAS
+   */
   useFocusEffect(
     useCallback(() => {
-      buscarDisciplina({ ...filters, disciplinaNome: busca });
-    }, [buscarDisciplina, filters, busca])
+      buscarDisciplina();
+    }, [buscarDisciplina]),
   );
+
+  /**
+   * CONFIRMAR EXCLUSÃO
+   */
+  const handleConfirmDelete =
+    async () => {
+      if (!selectedId) return;
+
+      try {
+        await deleteDisciplina(
+          selectedId,
+        );
+
+        showMessage(
+          "Disciplina excluída com sucesso.",
+          TypeMessage.success,
+        );
+      } catch (error) {
+        showMessage(
+          "Erro ao excluir a disciplina.",
+          TypeMessage.error,
+        );
+      } finally {
+        setConfirmVisible(false);
+
+        setSelectedId(null);
+      }
+    };
 
   return (
     <View style={{ flex: 1 }}>
@@ -64,23 +124,51 @@ export function Disciplina() {
           placeholder="Buscar disciplina..."
           searchValue={busca}
           onSearchChange={setBusca}
-          onFilterPress={abrir}
-          onAddPress={() => navigation.navigate('DisciplinaForm', { mode: 'create' })}
+          onAddPress={() =>
+            navigation.navigate(
+              "DisciplinaForm",
+              {
+                mode: "create",
+              },
+            )
+          }
         />
-        
+
         {dados.length === 0 ? (
           <EmptyCarteira />
         ) : (
-          dados.map(item => (
+          dados.map((item) => (
             <CarteiraItem
-              key={item.disciplinaId}
+              key={
+                item.disciplinaId
+              }
               icon="notebook"
-              title={item.disciplinaNome}
-              description={description(item)}
-              onPress={() => navigation.navigate('DisciplinaForm', { disciplinaId: item.disciplinaId, mode: 'edit' })}
+              title={
+                item.disciplinaNome
+              }
+              description={description(
+                item,
+              )}
+              onPress={() =>
+                navigation.navigate(
+                  "DisciplinaForm",
+                  {
+                    disciplinaId:
+                      item.disciplinaId,
+
+                    mode: "edit",
+                  },
+                )
+              }
               onPressDelete={() => {
-                setSelectedId(item.disciplinaId ?? null);
-                setConfirmVisible(true);
+                setSelectedId(
+                  item.disciplinaId ??
+                    null,
+                );
+
+                setConfirmVisible(
+                  true,
+                );
               }}
             />
           ))
@@ -95,28 +183,16 @@ export function Disciplina() {
         cancelText="Cancelar"
         danger
         onCancel={() => {
-          setConfirmVisible(false);
+          setConfirmVisible(
+            false,
+          );
+
           setSelectedId(null);
         }}
-        onConfirm={handleConfirmDelete} 
+        onConfirm={
+          handleConfirmDelete
+        }
       />
-
-      <FakeBottomSheet visible={visible} onClose={fechar}>
-        <FilterSheet
-          filters={FiltroDisciplina}
-          filtroAtual={filters}
-          onApply={data => {
-            setFilters(data);
-            buscarDisciplina({ ...data, disciplinaNome: busca });
-            fechar();
-          }}
-          onClear={() => {
-            clearFilters();
-            buscarDisciplina({ disciplinaNome: busca });
-            fechar();
-          }}
-        />
-      </FakeBottomSheet>
     </View>
   );
 }

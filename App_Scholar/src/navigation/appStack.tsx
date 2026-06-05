@@ -17,6 +17,8 @@ import { DisciplinaForm } from '../screens/Disciplina/DisciplinaForm';
 import { Professor } from '../screens/Professor/Professor';
 import { ProfessorForm } from '../screens/Professor/ProfessorForm';
 import { BoletimDisciplinaAdmin } from "../screens/BoletimAdmin/BoletimDisciplinaAdmin";
+import {PerfilScreen} from "../screens/Perfil";
+import {MudarSenha} from "../screens/Auth/mudarSenha";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -114,6 +116,18 @@ export function AppStack() {
         name="ProfessorForm"
         component={ProfessorForm}
         options={{ title: 'Professores', ...headerOptions }}
+      />
+
+      <Stack.Screen
+        name="Perfil"
+        component={PerfilScreen}
+        options={{ title: 'Perfil', ...headerOptions }}
+      />
+
+      <Stack.Screen
+        name="MudarSenha"
+        component={MudarSenha}
+        options={{ title: 'Mudar Senha', ...headerOptions }}
       />
     </Stack.Navigator>
   );

@@ -1,61 +1,80 @@
-import { useState, useCallback } from 'react';
-import { CursoService } from '../../services/cursoService';
-import { type CursoFiltro, Curso } from '../../types/curso';
+import { useState, useCallback } from "react";
+
+import { CursoService } from "../../services/cursoService";
+
+import { Curso } from "../../types/curso";
 
 export function useCurso() {
-  // Lista de cursos carregada da API
-  const [dados, setDados] = useState<Curso[]>([]);
+  const [dados, setDados] =
+    useState<Curso[]>([]);
 
-  // Controle de carregamento da UI
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  /**
-   * Busca cursos na API com filtros opcionais
-   */
-  const buscarCurso = useCallback(
-    async (filtros?: CursoFiltro) => {
-      setLoading(true);
+  const buscarCurso =
+    useCallback(
+      async () => {
+        setLoading(true);
 
-      try {
-        const response = await CursoService.buscarTodas(filtros);
-        setDados(response);
-      } catch (error) {
-        console.error('Erro ao buscar cursos:', error);
+        try {
+          const response =
+            await CursoService.buscarTodas();
 
-        // Em caso de falha, limpa a lista para evitar dados inconsistentes
-        setDados([]);
+          const cursos =
+            Array.isArray(
+              response,
+            )
+              ? response
+              : [];
 
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+          setDados(cursos);
+        } catch (error) {
+          console.error(
+            "Erro ao buscar cursos:",
+            error,
+          );
 
-  /**
-   * Remove um curso pelo ID
-   */
-  const deleteCurso = useCallback(
-    async (cursoId: string) => {
-      setLoading(true);
+          setDados([]);
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
-      try {
-        await CursoService.excluir(cursoId);
+  const deleteCurso =
+    useCallback(
+      async (
+        cursoId: string,
+      ) => {
+        setLoading(true);
 
-        
-        setDados((prev) =>
-          prev.filter((c) => c.cursoId !== cursoId)
-        );
-      } catch (error) {
-        console.error('Erro ao deletar curso:', error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+        try {
+          await CursoService.excluir(
+            cursoId,
+          );
+
+          setDados(
+            (prev) =>
+              prev.filter(
+                (c) =>
+                  c.cursoId !==
+                  cursoId,
+              ),
+          );
+        } catch (error) {
+          console.error(
+            "Erro ao deletar curso:",
+            error,
+          );
+
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
   return {
     dados,

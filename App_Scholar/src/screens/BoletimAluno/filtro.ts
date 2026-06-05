@@ -1,12 +1,7 @@
 import { FilterFieldConfig } from '../../components/Filtro/types';
 
 export const FiltroBoletimAluno: FilterFieldConfig[] = [
-  {
-    key: 'disciplinaID',
-    label: 'Disciplina',
-    type: 'combo',
-    source: 'disciplinas'
-  },
+
   {
     key: 'boletimSituacao',
     label: 'Situação',

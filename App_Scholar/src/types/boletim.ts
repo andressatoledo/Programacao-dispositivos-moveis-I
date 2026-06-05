@@ -15,8 +15,7 @@ export type BoletimSituacao =
 
 export interface Boletim {
   boletimId?: string;
-  alunoId: string;
-  alunoNome?: string;            
+  alunoId: string;       
   disciplinaId: string;
   disciplinaNome?: string;       
   boletimNota1: number;
@@ -28,6 +27,10 @@ export interface Boletim {
     disciplinaNome: string;
     disciplinaSemestre: number;
   };
+  aluno: {
+    alunoId: string;
+    alunoNome: string;
+  };
 }
 
 export type BoletimInput = {
@@ -37,6 +40,7 @@ export type BoletimInput = {
   boletimNota2: number;
   boletimMedia: number;
   boletimSituacao: BoletimSituacao;
+
 };
 
 export interface BoletimFiltro {

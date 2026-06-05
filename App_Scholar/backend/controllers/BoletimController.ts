@@ -1,31 +1,66 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { BoletimService } from "../services/boletimService";
+import { AuthRequest } from "../middlewares/authMiddleware";
 
 export class BoletimController {
-  static async listar(req: Request, res: Response) {
-    console.log("Listando boletins...",req.query);
+  static async listar(
+    req: AuthRequest,
+    res: Response,
+  ) {
     try {
-      const alunoId = req.query.alunoId as string | undefined;
-      const boletins = await prisma.boletim.findMany({
-        where: {alunoId},
-        include: {
-          aluno: true,
-          disciplina: true,
-        },
-      });
-      console.log("Boletins encontrados:", boletins);
+      const alunoIdQuery =
+        req.query.alunoId as string | undefined;
+
+      const user = req.user;
+      console.log("User in BoletimController.listar:", user);
+      let where: any = {};
+
+      // FILTRO POR ALUNO
+      if (alunoIdQuery) {
+        where.alunoId = alunoIdQuery;
+      }
+
+      // PROFESSOR -> apenas disciplinas dele
+      if (user?.role === "professor") {
+        where.disciplina = {
+          professorId: user.professorId,
+        };
+      }
+
+      // ALUNO -> apenas próprios boletins
+      if (user?.role === "aluno") {
+        where.alunoId = user.alunoId ?? "";
+      }
+
+      const boletins =
+        await prisma.boletim.findMany({
+          where,
+
+          include: {
+            aluno: true,
+
+            disciplina: true,
+          },
+        });
+
       return res.json(boletins);
     } catch (error) {
-      console.error("Erro ao listar boletins:", error);
-      return res.status(500).json({ error: "Erro ao listar boletins" });
+      console.error(
+        "Erro ao listar boletins:",
+        error,
+      );
+
+      return res.status(500).json({
+        error: "Erro ao listar boletins",
+      });
     }
   }
+
 
   static async buscarPorId(req: Request, res: Response) {
     try {
       const id = String(req.params.id);
-
       const boletim = await prisma.boletim.findUnique({
         where: { boletimId: id },
         include: {
@@ -38,6 +73,7 @@ export class BoletimController {
         return res.status(404).json({ error: "Boletim não encontrado" });
       }
 
+      console.log("Boletim encontrado:", boletim);
       return res.json(boletim);
     } catch (error) {
       console.error("Erro ao buscar boletim:", error);

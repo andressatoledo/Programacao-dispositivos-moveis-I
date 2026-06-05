@@ -46,17 +46,23 @@ export type RootStackParamList = {
 
   BoletimAdmin: undefined;
 
-  BoletimAdminForm: {
-    mode: Mode;
-    alunoId?: string;
-    disciplinaId?: string;
-    navigation?: undefined;
-  };
+ BoletimAdminForm: {
+  mode: Mode;
+  boletimId?: string;
+  alunoId?: string;
+  disciplinaId?: string;
+  disciplinaNome?: string;
+};
 
   BoletimDisciplinaAdmin: {
     mode: Mode;
     alunoId?: string;
     navigation?: undefined;
   };
+
+  Perfil: {
+    navigation?: undefined;
+  };
+  MudarSenha: undefined;
 
 };

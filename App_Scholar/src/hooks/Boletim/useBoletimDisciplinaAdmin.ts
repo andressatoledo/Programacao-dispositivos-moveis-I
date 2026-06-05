@@ -1,80 +1,124 @@
-import { useState, useCallback } from 'react';
-import { BoletimService } from '../../services/boletimService';
-import { type Boletim } from '../../types/boletim';
+import {
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+
+import { BoletimService } from "../../services/boletimService";
+
+import { type Boletim } from "../../types/boletim";
 
 export function useBoletimDisciplinaAdmin() {
-  // Lista de disciplinas (boletins) do aluno selecionado
-  const [disciplinasDoAluno, setDisciplinasDoAluno] = useState<Boletim[]>([]);
+  const [
+    disciplinasDoAluno,
+    setDisciplinasDoAluno,
+  ] = useState<Boletim[]>([]);
 
-  // Estado de loading para controle da UI
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  /**
-   * Busca todas as disciplinas de um aluno específico.
-   * Permite filtro opcional por nome da disciplina.
-   */
-  const buscarDisciplinasDoAluno = useCallback(
-    async (alunoId: string, busca?: string) => {
-      setLoading(true);
+  const [busca, setBusca] =
+    useState("");
 
-      try {
-        // Busca na API filtrando pelo aluno
-        const response = await BoletimService.buscarTodas({
-          alunoID: alunoId,
-        });
+  const buscarDisciplinasDoAluno =
+    useCallback(
+      async (alunoId: string) => {
+        setLoading(true);
 
-        let filtrado = response;
+        try {
+          const response =
+            await BoletimService.buscarTodas(
+              {
+                alunoId,
+              },
+            );
 
-        // // Filtro opcional por nome da disciplina (frontend)
-        // if (busca) {
-        //   filtrado = filtrado.filter((d) =>
-        //     d.disciplinaNome.toLowerCase().includes(busca.toLowerCase())
-        //   );
-        // }
+          setDisciplinasDoAluno(
+            response || [],
+          );
+        } catch (error) {
+          console.error(
+            "Erro ao buscar disciplinas do aluno:",
+            error,
+          );
 
-        setDisciplinasDoAluno(filtrado);
-      } catch (error) {
-        console.error('Erro ao buscar disciplinas do aluno:', error);
+          setDisciplinasDoAluno([]);
 
-        // Em caso de erro, limpa estado para evitar dados inconsistentes
-        setDisciplinasDoAluno([]);
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
-        throw error;
-      } finally {
-        setLoading(false);
+  const disciplinasFiltradas =
+    useMemo(() => {
+      const buscaLower = busca
+        .toLowerCase()
+        .trim();
+
+      if (!buscaLower) {
+        return disciplinasDoAluno;
       }
-    },
-    []
-  );
 
-  /**
-   * Remove uma disciplina (boletim) do aluno
-   */
-  const deleteDisciplina = useCallback(
-    async (boletimId: string) => {
-      setLoading(true);
+      return disciplinasDoAluno.filter(
+        (item) =>
+          item.disciplina?.disciplinaNome
+            ?.toLowerCase()
+            .includes(buscaLower),
+      );
+    }, [
+      disciplinasDoAluno,
+      busca,
+    ]);
 
-      try {
-        await BoletimService.excluir(boletimId);
+  const deleteDisciplina =
+    useCallback(
+      async (boletimId: string) => {
+        setLoading(true);
 
-        // Atualização otimista da UI
-        setDisciplinasDoAluno((prev) =>
-          prev.filter((d) => d.boletimId !== boletimId)
-        );
-      } catch (error) {
-        console.error('Erro ao remover disciplina:', error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+        try {
+          await BoletimService.excluir(
+            boletimId,
+          );
+
+          setDisciplinasDoAluno(
+            (prev) =>
+              prev.filter(
+                (d) =>
+                  d.boletimId !==
+                  boletimId,
+              ),
+          );
+        } catch (error) {
+          console.error(
+            "Erro ao remover disciplina:",
+            error,
+          );
+
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
   return {
-    disciplinasDoAluno,
+    disciplinasDoAluno:
+      disciplinasFiltradas,
+
+    dadosOriginais:
+      disciplinasDoAluno,
+
     loading,
+
+    busca,
+    setBusca,
+
     buscarDisciplinasDoAluno,
+
     deleteDisciplina,
   };
 }

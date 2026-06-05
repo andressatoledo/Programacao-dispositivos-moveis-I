@@ -1,64 +1,123 @@
-import { useState, useCallback } from 'react';
-import { DisciplinaService } from '../../services/disciplinaService';
-import { type DisciplinaFiltro, Disciplina } from '../../types/disciplina';
+import { useState, useCallback, useMemo } from "react";
+
+import { DisciplinaService } from "../../services/disciplinaService";
+
+import {
+  type DisciplinaFiltro,
+  Disciplina,
+} from "../../types/disciplina";
 
 export function useDisciplina() {
-  // Lista de disciplinas carregada da API
-  const [dados, setDados] = useState<Disciplina[]>([]);
+  // LISTA ORIGINAL VINDO DA API
+  const [dados, setDados] = useState<
+    Disciplina[]
+  >([]);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
   /**
-   * Busca disciplinas na API com filtros opcionais
+   * TEXTO DA BUSCA LOCAL
    */
-  const buscarDisciplina = useCallback(
-    async (filtros?: DisciplinaFiltro) => {
+  const [busca, setBusca] =
+    useState("");
+
+  /**
+   * BUSCA DISCIPLINAS NA API
+   * SEM FILTROS DO FRONTEND
+   */
+  const buscarDisciplina =
+    useCallback(async () => {
       setLoading(true);
 
       try {
-        const response = await DisciplinaService.buscarTodas(filtros);
-        setDados(response);
-      } catch (error) {
-        console.error('Erro ao buscar disciplinas:', error);
+        const response =
+          await DisciplinaService.buscarTodas();
 
-        // Limpa dados para evitar inconsistência 
+        setDados(response || []);
+      } catch (error) {
+        console.error(
+          "Erro ao buscar disciplinas:",
+          error,
+        );
+
         setDados([]);
 
         throw error;
       } finally {
         setLoading(false);
       }
-    },
-    []
-  );
+    }, []);
 
   /**
-   * Remove uma disciplina
+   * FILTRO LOCAL PELO NOME
    */
-  const deleteDisciplina = useCallback(
-    async (disciplinaId: string) => {
-      setLoading(true);
+  const dadosFiltrados = useMemo(() => {
+    const buscaLower = busca
+      .toLowerCase()
+      .trim();
 
-      try {
-        await DisciplinaService.excluir(disciplinaId);
+    // SE NÃO DIGITOU NADA
+    if (!buscaLower) {
+      return dados;
+    }
 
-        setDados((prev) =>
-          prev.filter((d) => d.disciplinaId !== disciplinaId)
-        );
-      } catch (error) {
-        console.error('Erro ao deletar disciplina:', error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+    return dados.filter(
+      (item) =>
+        item.disciplinaNome
+          ?.toLowerCase()
+          .includes(buscaLower),
+    );
+  }, [dados, busca]);
+
+  /**
+   * REMOVE DISCIPLINA
+   */
+  const deleteDisciplina =
+    useCallback(
+      async (disciplinaId: string) => {
+        setLoading(true);
+
+        try {
+          await DisciplinaService.excluir(
+            disciplinaId,
+          );
+
+          setDados((prev) =>
+            prev.filter(
+              (d) =>
+                d.disciplinaId !==
+                disciplinaId,
+            ),
+          );
+        } catch (error) {
+          console.error(
+            "Erro ao deletar disciplina:",
+            error,
+          );
+
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
   return {
-    dados,
+    // LISTA FILTRADA
+    dados: dadosFiltrados,
+
+    // LISTA ORIGINAL
+    dadosOriginais: dados,
+
     loading,
+
+    busca,
+    setBusca,
+
     buscarDisciplina,
+
     deleteDisciplina,
   };
 }

@@ -1,61 +1,98 @@
-import { useState, useCallback } from 'react';
-import { AlunoService } from '../../services/alunoService';
-import { type AlunoFiltro, Aluno } from '../../types/aluno';
+import {
+  useState,
+  useCallback,
+} from "react";
+
+import { AlunoService } from "../../services/alunoService";
+
+import { Aluno } from "../../types/aluno";
 
 export function useCarteira() {
-  
-  const [dados, setDados] = useState<Aluno[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [dados, setDados] =
+    useState<Aluno[]>([]);
 
-  const buscarCarteira = useCallback(
-    async (filtros?: AlunoFiltro) => {
-      setLoading(true);
+  const [loading, setLoading] =
+    useState(false);
 
-      try {
-        const response = await AlunoService.buscarTodas(filtros);
+  const buscarCarteira =
+    useCallback(
+      async () => {
+        setLoading(true);
 
-        const alunos = Array.isArray(response) ? response : [];
+        try {
+          const response =
+            await AlunoService.buscarTodas();
 
-        setDados(alunos);
-      } catch (error) {
-        console.error("Erro ao buscar alunos:", error);
-        setDados([]);
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+          const alunos =
+            Array.isArray(
+              response,
+            )
+              ? response
+              : [];
 
-  const deleteAluno = useCallback(
-    async (alunoId: string) => {
-      setLoading(true);
+          setDados(alunos);
+        } catch (error) {
+          console.error(
+            "Erro ao buscar alunos:",
+            error,
+          );
 
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+          setDados([]);
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
-        // await AlunoService.excluir(alunoId);
+  const deleteAluno =
+    useCallback(
+      async (
+        alunoId: string,
+      ) => {
+        setLoading(true);
 
-        setDados(prev =>
-          Array.isArray(prev)
-            ? prev.filter(a => a.alunoId !== alunoId)
-            : []
-        );
+        try {
+          await new Promise(
+            (resolve) =>
+              setTimeout(
+                resolve,
+                1000,
+              ),
+          );
 
-      } catch (error) {
-        console.error("Erro ao deletar:", error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+          // await AlunoService.excluir(alunoId);
+
+          setDados(
+            (prev) =>
+              Array.isArray(
+                prev,
+              )
+                ? prev.filter(
+                    (a) =>
+                      a.alunoId !==
+                      alunoId,
+                  )
+                : [],
+          );
+        } catch (error) {
+          console.error(
+            "Erro ao deletar:",
+            error,
+          );
+
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      },
+      [],
+    );
 
   return {
     dados,
     loading,
     buscarCarteira,
-    deleteAluno
+    deleteAluno,
   };
 }

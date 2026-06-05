@@ -1,70 +1,122 @@
-import React, { useState, useCallback } from 'react';
-import { View } from 'react-native';
-import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, {
+  useCallback,
+} from "react";
 
-import { Carteira } from '../../components/Form/Carteira';
-import { CarteiraItem } from '../../components/Form/CarteiraItem';
-import { CarteiraHeader } from '../../components/Form/CarteiraHeader';
-import { EmptyCarteira } from '../../components/Feedback/EmptyCarteira';
+import { View } from "react-native";
 
-import { RootStackParamList } from '../../navigation/types';
-import { useBoletimDisciplinaAdmin } from '@/src/hooks/Boletim/useBoletimDisciplinaAdmin';
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+} from "@react-navigation/native";
 
-type NavProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'BoletimDisciplinaAdmin'
->;
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import { Carteira } from "../../components/Form/Carteira";
+
+import { CarteiraItem } from "../../components/Form/CarteiraItem";
+
+import { CarteiraHeader } from "../../components/Form/CarteiraHeader";
+
+import { EmptyCarteira } from "../../components/Feedback/EmptyCarteira";
+
+import { RootStackParamList } from "../../navigation/types";
+
+import { useBoletimDisciplinaAdmin } from "@/src/hooks/Boletim/useBoletimDisciplinaAdmin";
+
+type NavProp =
+  NativeStackNavigationProp<
+    RootStackParamList,
+    "BoletimDisciplinaAdmin"
+  >;
 
 export function BoletimDisciplinaAdmin() {
-  const navigation = useNavigation<NavProp>();
-  const route = useRoute<any>();
+  const navigation =
+    useNavigation<NavProp>();
 
-  const { alunoId } = route.params;
+  const route =
+    useRoute<any>();
 
-  const { disciplinasDoAluno, buscarDisciplinasDoAluno } = useBoletimDisciplinaAdmin();
+  const { alunoId } =
+    route.params;
 
-  const [busca, setBusca] = useState('');
+  const {
+    disciplinasDoAluno,
+    buscarDisciplinasDoAluno,
+    busca,
+    setBusca,
+  } =
+    useBoletimDisciplinaAdmin();
 
   useFocusEffect(
     useCallback(() => {
-      buscarDisciplinasDoAluno(alunoId, busca);
-    }, [alunoId, busca])
+      buscarDisciplinasDoAluno(
+        alunoId,
+      );
+    }, [
+      alunoId,
+      buscarDisciplinasDoAluno,
+    ]),
   );
 
   return (
     <View style={{ flex: 1 }}>
       <Carteira title="Disciplinas">
-        
         <CarteiraHeader
           placeholder="Buscar disciplina..."
           searchValue={busca}
-          onSearchChange={setBusca}
+          onSearchChange={
+            setBusca
+          }
           hideAdd={true}
-          
         />
 
-        {disciplinasDoAluno.length === 0 ? (
+        {disciplinasDoAluno.length ===
+        0 ? (
           <EmptyCarteira />
         ) : (
-          disciplinasDoAluno.map(item => (
-            <CarteiraItem
-              key={item.disciplinaID}
-              icon="book-education"
-              title={item.disciplinaNome}
-              description={`Média: ${item.boletimMedia?.toFixed(1) ?? '0.0'}`}
-              
-              onPress={() => {
-                navigation.navigate('BoletimAdminForm', {
-                  mode: 'edit',
-                  alunoId,
-                  disciplinaId: item.disciplinaID,
-                });
-              }}
+          disciplinasDoAluno.map(
+            (item) => (
+              <CarteiraItem
+                key={
+                  item.boletimId
+                }
+                icon="book-education"
+                title={
+                  item.disciplina
+                    ?.disciplinaNome ||
+                  "Disciplina sem nome"
+                }
+                description={`Média: ${
+                  item.boletimMedia?.toFixed(
+                    1,
+                  ) ?? "0.0"
+                }`}
+                onPress={() => {
+                  navigation.navigate(
+                    "BoletimAdminForm",
+                    {
+                      mode:
+                        "edit",
 
-            
-            />
-          ))
+                      alunoId,
+
+                      disciplinaId:
+                        item.disciplinaId,
+
+                      boletimId:
+                        item.boletimId,
+
+                      disciplinaNome:
+                        item
+                          .disciplina
+                          .disciplinaNome,
+                    },
+                  );
+                }}
+              />
+            ),
+          )
         )}
       </Carteira>
     </View>

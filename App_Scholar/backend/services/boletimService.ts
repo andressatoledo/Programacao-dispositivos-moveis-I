@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma";
-import { BoletimSituacao } from "@prisma/client";
+import { PrismaClient, BoletimSituacao} from "@prisma/client";
+
 export class BoletimService {
   static async calcularMedia(boletimId: string) {
     const boletim = await prisma.boletim.findUnique({
@@ -56,55 +57,79 @@ export class BoletimService {
     });
   }
 
-  static async sincronizarAluno(alunoId: string) {
-    const aluno = await prisma.aluno.findUnique({
-      where: { alunoId },
-      include: {
-        curso: {
-          include: {
-            disciplinas: true,
-          },
+  static async sincronizarAluno(
+  alunoId: string,
+  db: PrismaClient | any = prisma
+) {
+  console.log("Sincronizando boletins do aluno", alunoId);
+
+  const aluno = await db.aluno.findUnique({
+    where: { alunoId },
+
+    include: {
+      curso: {
+        include: {
+          disciplinas: true,
         },
-        boletins: true,
       },
-    });
 
-    if (!aluno) throw new Error("Aluno não encontrado");
+      boletins: true,
+    },
+  });
 
-    const disciplinas = aluno.curso.disciplinas;
+  if (!aluno) {
+    throw new Error("Aluno não encontrado");
+  }
 
-    const boletinsExistentes = aluno.boletins.map((b) => b.disciplinaId);
+  const disciplinas = aluno.curso.disciplinas;
 
-    // 1. CRIAR FALTANTES
-    const faltantes = disciplinas.filter(
-      (d) => !boletinsExistentes.includes(d.disciplinaId),
+  const boletinsExistentes =
+    aluno.boletins.map(
+      (b: any) => b.disciplinaId
     );
 
-    if (faltantes.length) {
-      await prisma.boletim.createMany({
-        data: faltantes.map((d) => ({
-          alunoId: aluno.alunoId,
-          disciplinaId: d.disciplinaId,
-          boletimNota1: 0,
-          boletimNota2: 0,
-          boletimMedia: 0,
-          boletimSituacao: "NaoCursado",
-        })),
-      });
-    }
+  // CRIAR FALTANTES
+  const faltantes = disciplinas.filter(
+    (d: any) =>
+      !boletinsExistentes.includes(
+        d.disciplinaId
+      )
+  );
 
-    // 2. REMOVER EXTRAS
-    const disciplinasIds = disciplinas.map((d) => d.disciplinaId);
-
-    await prisma.boletim.deleteMany({
-      where: {
+  if (faltantes.length) {
+    await db.boletim.createMany({
+      data: faltantes.map((d: any) => ({
         alunoId: aluno.alunoId,
-        disciplinaId: {
-          notIn: disciplinasIds,
-        },
-      },
+
+        disciplinaId:
+          d.disciplinaId,
+
+        boletimNota1: 0,
+        boletimNota2: 0,
+        boletimMedia: 0,
+
+        boletimSituacao:
+          "NaoCursado",
+      })),
     });
   }
+
+  // REMOVER EXTRAS
+  const disciplinasIds =
+    disciplinas.map(
+      (d: any) => d.disciplinaId
+    );
+
+  await db.boletim.deleteMany({
+    where: {
+      alunoId: aluno.alunoId,
+
+      disciplinaId: {
+        notIn: disciplinasIds,
+      },
+    },
+  });
+}
 
   static async sincronizarCurso(cursoId: string) {
     const alunos = await prisma.aluno.findMany({

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { ComboOption } from "../type/comboOption";
-import { BoletimSituacao } from "@prisma/client";
 import { BoletimService } from "../services/boletimService";
 
 export class DisciplinaController {

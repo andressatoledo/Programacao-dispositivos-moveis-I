@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { useTheme } from '../../theme/themeContext';
+import { useTheme } from '../../contexts/Theme/themeContext';
 import { Text } from 'react-native-paper';
 import {useStyles} from './styles'
 

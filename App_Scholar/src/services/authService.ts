@@ -21,4 +21,17 @@ export const AuthService = {
     const response = await api.post<LoginResponse>("/auth/login", data);
     return response.data;
   },
+
+  async mudarSenha(data: {
+  senhaAtual: string;
+  novaSenha: string;
+}) {
+  const response = await api.put(
+    "/auth/mudar-senha",
+    data
+  );
+
+ 
+  return response.data;
+}
 };

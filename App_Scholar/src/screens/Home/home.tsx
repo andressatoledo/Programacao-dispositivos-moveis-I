@@ -8,8 +8,18 @@ import { cadastrosConfig } from "../../config/cadastros";
 import { dashboardResumoConfig } from "../../config/dashboardResumo";
 import { useAuth } from "../../hooks/Auth/useAuth";
 import { useDashboardResumo } from "@/src/hooks/Outros/useDashboardResume";
+import { RootStackParamList } from "@/src/navigation/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function Home() {
+type Props =
+  NativeStackScreenProps<
+    RootStackParamList,
+    "Home"
+  >;
+
+export default function Home({
+  navigation,
+}: Props) {
   const { user } = useAuth();
   const { theme } = useTheme();
   const resumo = useDashboardResumo();
@@ -34,7 +44,7 @@ export default function Home() {
 
   return (
     <Form>
-      <DashboardHeader />
+      <DashboardHeader navigation={navigation} />
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
         {resumoFiltrado.map((item) => (

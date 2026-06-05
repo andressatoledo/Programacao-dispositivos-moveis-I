@@ -1,60 +1,121 @@
-import React, { useState, useCallback } from 'react';
-import { View } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 
-import { Carteira } from '../../components/Form/Carteira';
-import { CarteiraItem } from '../../components/Form/CarteiraItem';
-import { CarteiraHeader } from '../../components/Form/CarteiraHeader';
-import { FilterSheet } from '../../components/Filtro/FilterSheet';
-import { FakeBottomSheet } from '../../components/Form/FakeButtonSheet';
-import { EmptyCarteira } from '../../components/Feedback/EmptyCarteira';
-import { ConfirmDialog } from '../../components/Feedback/ConfirmDialog';
+import { View } from "react-native";
 
-import { useBoletimAdmin } from '../../hooks/Boletim/useBoletimAdmin';
-import { useFilterSheet } from '../../hooks/Filter/useFilterSheet';
-import { useGenericFilter } from '../../hooks/Filter/useGenericFilter';
-import { useMensagem } from '../../hooks/Outros/useMensagem';
+import {
+  useNavigation,
+  useFocusEffect,
+} from "@react-navigation/native";
 
-import { BoletimFiltro } from '../../types/boletim';
-import { RootStackParamList } from '../../navigation/types';
-import { TypeMessage } from '@/src/types/Outros/messageType';
-import { FiltroBoletimAdmin } from './filtro'; 
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import { Carteira } from "../../components/Form/Carteira";
+
+import { CarteiraItem } from "../../components/Form/CarteiraItem";
+
+import { CarteiraHeader } from "../../components/Form/CarteiraHeader";
+
+import { EmptyCarteira } from "../../components/Feedback/EmptyCarteira";
+
+import { ConfirmDialog } from "../../components/Feedback/ConfirmDialog";
+
+import { useBoletimAdmin } from "../../hooks/Boletim/useBoletimAdmin";
+
+import { useMensagem } from "../../hooks/Outros/useMensagem";
+
+import { RootStackParamList } from "../../navigation/types";
+
+import { TypeMessage } from "@/src/types/Outros/messageType";
 
 export function BoletimAdmin() {
-  type NavProp = NativeStackNavigationProp<RootStackParamList, 'BoletimAdmin'>;
-  const navigation = useNavigation<NavProp>();
-  const showMessage = useMensagem();
+  type NavProp =
+    NativeStackNavigationProp<
+      RootStackParamList,
+      "BoletimAdmin"
+    >;
 
-  const { visible, abrir, fechar } = useFilterSheet();
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  
-  const { filters, setFilters, clearFilters } = useGenericFilter<BoletimFiltro>();
-  const { alunosUnicos, buscarListaAlunos, deleteBoletim } = useBoletimAdmin();
-  const [busca, setBusca] = useState('');
+  const navigation =
+    useNavigation<NavProp>();
 
-  // Função para deletar todos os registros de boletim do aluno selecionado
-  const handleConfirmDelete = async () => {
-    if (!selectedId) return;
+  const showMessage =
+    useMensagem();
 
-    try {
-      await deleteBoletim(selectedId);
-      showMessage('Registros do aluno excluídos com sucesso.', TypeMessage.success);
-    } catch (error) {
-      showMessage('Erro ao excluir registros do aluno.', TypeMessage.error);
-    } finally {
-      setConfirmVisible(false);
-      setSelectedId(null);
-    }
-  };
+  const [confirmVisible, setConfirmVisible] =
+    useState(false);
+
+  const [selectedId, setSelectedId] =
+    useState<string | null>(null);
+
+  const {
+    dados,
+    buscarListaAlunos,
+    deleteBoletim,
+  } = useBoletimAdmin();
+
+  const [busca, setBusca] =
+    useState("");
 
   useFocusEffect(
     useCallback(() => {
-      // Busca a lista de alunos que possuem boletins
-      buscarListaAlunos({ ...filters, alunoNome: busca });
-    }, [buscarListaAlunos, filters, busca])
+      buscarListaAlunos();
+    }, [buscarListaAlunos])
   );
+
+  const alunosFiltrados = useMemo(() => {
+    const buscaLower =
+      busca.toLowerCase().trim();
+
+    const boletinsFiltrados =
+      dados.filter((item) => {
+        const nome =
+          item.aluno?.alunoNome
+            ?.toLowerCase()
+            ?.trim() || "";
+
+        return (
+          !buscaLower ||
+          nome.includes(buscaLower)
+        );
+      });
+
+    return boletinsFiltrados.filter(
+      (item, index, array) =>
+        array.findIndex(
+          (b) =>
+            b.alunoId ===
+            item.alunoId
+        ) === index
+    );
+  }, [dados, busca]);
+
+  const handleConfirmDelete =
+    async () => {
+      if (!selectedId) return;
+
+      try {
+        await deleteBoletim(
+          selectedId
+        );
+
+        showMessage(
+          "Registros do aluno excluídos com sucesso.",
+          TypeMessage.success
+        );
+      } catch (error) {
+        showMessage(
+          "Erro ao excluir registros do aluno.",
+          TypeMessage.error
+        );
+      } finally {
+        setConfirmVisible(false);
+
+        setSelectedId(null);
+      }
+    };
 
   return (
     <View style={{ flex: 1 }}>
@@ -63,63 +124,64 @@ export function BoletimAdmin() {
           placeholder="Buscar aluno..."
           searchValue={busca}
           onSearchChange={setBusca}
-          onFilterPress={abrir}
-         
+          hideFilter
         />
-        
-        {alunosUnicos.length === 0 ? (
+
+        {alunosFiltrados.length ===
+        0 ? (
           <EmptyCarteira />
         ) : (
-          alunosUnicos.map(item => (
-            <CarteiraItem
-              key={item.alunoID}
-              icon="account-school"
-              title={item.alunoNome}
-              description="Clique para gerenciar notas e disciplinas"
-              onPress={() => {
-                // Navega para a tela que lista as disciplinas deste aluno específico
-                navigation.navigate('BoletimDisciplinaAdmin', { 
-                  alunoId: item.alunoID,
-                  mode: 'edit' // Na edição, geralmente não mudamos o aluno, apenas as notas/disciplinas
-                 
-                });
-              }}
-             
-            />
-          ))
+          alunosFiltrados.map(
+            (item) => (
+              <CarteiraItem
+                key={
+                  item.alunoId
+                }
+                icon="account-school"
+                title={
+                  item.aluno
+                    ?.alunoNome ||
+                  "Aluno sem nome"
+                }
+                description="Clique para gerenciar notas e disciplinas"
+                onPress={() => {
+                  navigation.navigate(
+                    "BoletimDisciplinaAdmin",
+                    {
+                      alunoId:
+                        item.alunoId,
+                      mode: "edit",
+                    }
+                  );
+                }}
+              />
+            )
+          )
         )}
       </Carteira>
 
       <ConfirmDialog
         visible={confirmVisible}
         title="Excluir registros"
-        description={`Deseja excluir todos os boletins de ${alunosUnicos.find(a => a.alunoID === selectedId)?.alunoNome}?`}
+        description={`Deseja excluir todos os boletins de ${
+          alunosFiltrados.find(
+            (a) =>
+              a.alunoId ===
+              selectedId
+          )?.aluno.alunoNome
+        }?`}
         confirmText="Excluir tudo"
         cancelText="Cancelar"
         danger
         onCancel={() => {
           setConfirmVisible(false);
+
           setSelectedId(null);
         }}
-        onConfirm={handleConfirmDelete} 
+        onConfirm={
+          handleConfirmDelete
+        }
       />
-
-      <FakeBottomSheet visible={visible} onClose={fechar}>
-        <FilterSheet
-          filters={FiltroBoletimAdmin}
-          filtroAtual={filters}
-          onApply={data => {
-            setFilters(data);
-            buscarListaAlunos({ ...data, alunoNome: busca });
-            fechar();
-          }}
-          onClear={() => {
-            clearFilters();
-            buscarListaAlunos({ alunoNome: busca });
-            fechar();
-          }}
-        />
-      </FakeBottomSheet>
     </View>
   );
 }

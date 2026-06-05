@@ -1,19 +1,25 @@
 // src/components/Dashboard/DashboardHeader.tsx
 
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useTheme } from '@/src/contexts/Theme/themeContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useAuth } from '@/src/hooks/Auth/useAuth';
+import { View, Text, TouchableOpacity } from "react-native";
+import { useTheme } from "@/src/contexts/Theme/themeContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useAuth } from "@/src/hooks/Auth/useAuth";
+import { Row } from "../Form/Row";
+
 
 interface DashboardHeaderProps {
   Titulo?: string;
   Subtitulo?: string;
+  navigation: any;
 }
 
-export function DashboardHeader({ Titulo, Subtitulo }: DashboardHeaderProps) {
+export function DashboardHeader({ Titulo, Subtitulo, navigation }: DashboardHeaderProps) {
   const { theme } = useTheme();
   const { user, logout } = useAuth();
 
+
+ 
+    
   return (
     <View
       style={{
@@ -25,13 +31,12 @@ export function DashboardHeader({ Titulo, Subtitulo }: DashboardHeaderProps) {
     >
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-   
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View
             style={{
               backgroundColor: theme.colors.primary,
@@ -48,23 +53,38 @@ export function DashboardHeader({ Titulo, Subtitulo }: DashboardHeaderProps) {
           </View>
 
           <View>
-            <Text style={{ fontWeight: 'bold', color: theme.colors.text }}>
-              {Titulo ? Titulo : `Bem-vindo, ${user?.nome || 'Usuário'}`}
+            <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
+              {Titulo ? Titulo : `Bem-vindo, ${user?.nome || "Usuário"}`}
             </Text>
             <Text style={{ color: theme.colors.destaque }}>
               {Subtitulo ? Subtitulo : user?.role}
             </Text>
           </View>
         </View>
+       
+          <Row>
+            
+            <TouchableOpacity
+  onPress={() =>
+    navigation.navigate("Perfil")
+  }
+>
+              <MaterialCommunityIcons
+                name="cog"
+                size={22}
+                color={theme.colors.text}
+              />
+            </TouchableOpacity>
 
-  
-        <TouchableOpacity onPress={logout}>
-          <MaterialCommunityIcons
-            name="logout"
-            size={22}
-            color={theme.colors.text}
-          />
-        </TouchableOpacity>
+            <TouchableOpacity onPress={logout}>
+              <MaterialCommunityIcons
+                name="logout"
+                size={22}
+                color={theme.colors.text}
+              />
+            </TouchableOpacity>
+          </Row>
+       
       </View>
     </View>
   );
