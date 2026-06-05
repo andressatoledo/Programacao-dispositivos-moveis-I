@@ -25,12 +25,25 @@ export interface Boletim {
   disciplina: {
     disciplinaId: string;
     disciplinaNome: string;
+    disciplinaCargaHoraria: number;
     disciplinaSemestre: number;
+    professor: {
+      professorId: string;
+      professorNome: string;
+    };
+
+    curso: {
+      cursoId: string;
+      cursoNome: string;
+      cursoDuracao?: number;
+    };
   };
   aluno: {
     alunoId: string;
     alunoNome: string;
+    alunoSemestreAtual: number;
   };
+ 
 }
 
 export type BoletimInput = {

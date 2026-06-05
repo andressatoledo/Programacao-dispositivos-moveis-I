@@ -13,11 +13,17 @@ interface DashboardHeaderProps {
   navigation: any;
 }
 
+
+
 export function DashboardHeader({ Titulo, Subtitulo, navigation }: DashboardHeaderProps) {
   const { theme } = useTheme();
   const { user, logout } = useAuth();
 
-
+  const roleFormatada =
+  user?.role
+    ? user.role.charAt(0).toUpperCase() +
+      user.role.slice(1)
+    : "";
  
     
   return (
@@ -57,7 +63,7 @@ export function DashboardHeader({ Titulo, Subtitulo, navigation }: DashboardHead
               {Titulo ? Titulo : `Bem-vindo, ${user?.nome || "Usuário"}`}
             </Text>
             <Text style={{ color: theme.colors.destaque }}>
-              {Subtitulo ? Subtitulo : user?.role}
+              {Subtitulo || roleFormatada}
             </Text>
           </View>
         </View>

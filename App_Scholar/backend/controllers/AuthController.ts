@@ -138,22 +138,22 @@ export class AuthController {
       where: { usuarioId },
     });
 
-    console.log('141');
+    
     if (!usuario) {
       return res.status(400).json({
         message: "Senha atual inválida",
       });
     }
-    console.log('147');
+   
     const senhaValida = await bcrypt.compare(senhaAtual, usuario.usuarioSenha);
 
-    console.log('149');
+   
     if (!senhaValida) {
       return res.status(400).json({
         message: "Senha atual inválida",
       });
     }
-    console.log('156');
+   
     const senhaHash = await bcrypt.hash(novaSenha, 10);
 
     await prisma.usuario.update({

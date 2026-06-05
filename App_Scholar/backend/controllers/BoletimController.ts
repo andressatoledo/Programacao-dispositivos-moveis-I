@@ -4,58 +4,150 @@ import { BoletimService } from "../services/boletimService";
 import { AuthRequest } from "../middlewares/authMiddleware";
 
 export class BoletimController {
-  static async listar(
-    req: AuthRequest,
-    res: Response,
-  ) {
-    try {
-      const alunoIdQuery =
-        req.query.alunoId as string | undefined;
+ static async listar(
+  req: AuthRequest,
+  res: Response,
+) {
+  try {
+    const alunoIdQuery =
+      req.query.alunoId as string | undefined;
 
-      const user = req.user;
-      console.log("User in BoletimController.listar:", user);
-      let where: any = {};
+    const user = req.user;
 
-      // FILTRO POR ALUNO
+    let where: any = {};
+
+    // ===================================
+    // ADMIN
+    // ===================================
+    if (user?.role === "admin") {
       if (alunoIdQuery) {
         where.alunoId = alunoIdQuery;
       }
+    }
 
-      // PROFESSOR -> apenas disciplinas dele
-      if (user?.role === "professor") {
-        where.disciplina = {
-          professorId: user.professorId,
-        };
-      }
-
-      // ALUNO -> apenas próprios boletins
-      if (user?.role === "aluno") {
-        where.alunoId = user.alunoId ?? "";
-      }
-
-      const boletins =
-        await prisma.boletim.findMany({
-          where,
-
-          include: {
-            aluno: true,
-
-            disciplina: true,
+    // ===================================
+    // ALUNO
+    // ===================================
+    if (user?.role === "aluno") {
+      const aluno =
+        await prisma.aluno.findUnique({
+          where: {
+            alunoId: user.alunoId!,
+          },
+          select: {
+            alunoSemestreAtual: true,
           },
         });
 
-      return res.json(boletins);
-    } catch (error) {
-      console.error(
-        "Erro ao listar boletins:",
-        error,
-      );
+      if (!aluno) {
+        return res.status(404).json({
+          error: "Aluno não encontrado",
+        });
+      }
 
-      return res.status(500).json({
-        error: "Erro ao listar boletins",
-      });
+      where = {
+        alunoId: user.alunoId,
+
+        disciplina: {
+          disciplinaSemestre: {
+            lte:
+              aluno.alunoSemestreAtual,
+          },
+        },
+      };
     }
+
+    // ===================================
+    // PROFESSOR
+    // ===================================
+    if (user?.role === "professor") {
+    
+      // Professor listando apenas suas disciplinas
+      if (!alunoIdQuery) {
+        where = {
+          disciplina: {
+            professorId:
+              user.professorId,
+          },
+        };
+      }
+
+   
+      // Professor consultando um aluno
+      if (alunoIdQuery) {
+        const aluno =
+          await prisma.aluno.findUnique({
+            where: {
+              alunoId: alunoIdQuery,
+            },
+            select: {
+              alunoSemestreAtual: true,
+            },
+          });
+
+        if (!aluno) {
+          return res.status(404).json({
+            error: "Aluno não encontrado",
+          });
+        }
+
+        where = {
+          alunoId: alunoIdQuery,
+
+          disciplina: {
+            professorId:
+              user.professorId,
+
+            disciplinaSemestre:
+              aluno.alunoSemestreAtual,
+          },
+        };
+      }
+    }
+
+    const boletins =
+      await prisma.boletim.findMany({
+        where,
+
+        include: {
+          aluno: true,
+
+          disciplina: {
+            include: {
+              professor: true,
+              curso: true,
+            },
+          },
+        },
+
+        orderBy: [
+          {
+            disciplina: {
+              disciplinaSemestre:
+                "asc",
+            },
+          },
+          {
+            disciplina: {
+              disciplinaNome:
+                "asc",
+            },
+          },
+        ],
+      });
+
+    return res.json(boletins);
+  } catch (error) {
+    console.error(
+      "Erro ao listar boletins:",
+      error,
+    );
+
+    return res.status(500).json({
+      error: "Erro ao listar boletins",
+    });
   }
+}
 
 
   static async buscarPorId(req: Request, res: Response) {
@@ -73,7 +165,6 @@ export class BoletimController {
         return res.status(404).json({ error: "Boletim não encontrado" });
       }
 
-      console.log("Boletim encontrado:", boletim);
       return res.json(boletim);
     } catch (error) {
       console.error("Erro ao buscar boletim:", error);

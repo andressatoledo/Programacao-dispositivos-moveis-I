@@ -32,6 +32,50 @@ export const Styles = (theme: ThemeType) => StyleSheet.create({
     marginRight: 8,
   },
 
+  infoContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginBottom: 16,
+  paddingBottom: 12,
+  borderBottomWidth: 1,
+  borderBottomColor:
+    theme.colors.space,
+},
+
+infoItem: {
+  flex: 1,
+},
+
+infoLabel: {
+  fontSize: 11,
+  color: theme.colors.opaco,
+  marginBottom: 4,
+},
+
+infoValue: {
+  fontSize: 14,
+  fontWeight: '600',
+  color: theme.colors.text,
+},
+
+progressHeader: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 8,
+  marginTop: 8,
+},
+
+progressText: {
+  fontSize: 12,
+  color: theme.colors.opaco,
+},
+
+progressPercent: {
+  fontSize: 12,
+  fontWeight: '700',
+},
+
   badge: {
     paddingHorizontal: 12,
     paddingVertical: 4,

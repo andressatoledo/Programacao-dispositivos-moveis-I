@@ -29,7 +29,6 @@ export function authMiddleware(
   try {
     const decoded = jwt.verify(token, SECRET) as TokenPayload;
     req.user = decoded;
-    console.log("Usuário autenticado:", req.user);
     return next();
   } catch {
     return res.status(401).json({ error: 'Token inválido' });

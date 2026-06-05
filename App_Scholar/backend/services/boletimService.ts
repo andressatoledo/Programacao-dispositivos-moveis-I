@@ -35,6 +35,10 @@ export class BoletimService {
       situacao = "Reprovado";
     }
 
+    if (boletim.boletimNota1 === 0 && boletim.boletimNota2 === 0) {
+      situacao = "EmAndamento";
+    }
+    
     return {
       media,
       situacao,
@@ -109,7 +113,7 @@ export class BoletimService {
         boletimMedia: 0,
 
         boletimSituacao:
-          "NaoCursado",
+          "EmAndamento",
       })),
     });
   }

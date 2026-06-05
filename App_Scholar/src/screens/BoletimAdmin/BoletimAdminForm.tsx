@@ -66,7 +66,7 @@ export function BoletimAdminForm({ route, navigation }: Props) {
             name="boletimNota1"
             render={({ field }) => (
               <InputField
-                label="Nota 1 *"
+                label="Nota 1"
                 value={field.value?.toString()}
                 onChangeText={field.onChange}
                 keyboardType="numeric"
@@ -83,7 +83,7 @@ export function BoletimAdminForm({ route, navigation }: Props) {
             name="boletimNota2"
             render={({ field }) => (
               <InputField
-                label="Nota 2 *"
+                label="Nota 2"
                 value={field.value?.toString()}
                 onChangeText={field.onChange}
                 keyboardType="numeric"
@@ -102,7 +102,7 @@ export function BoletimAdminForm({ route, navigation }: Props) {
           padding: 16,
           borderRadius: 12,
           alignItems: "center",
-          backgroundColor: theme.colors.primary, // pode puxar do theme depois
+          backgroundColor: theme.colors.primary,
         }}
       >
         <Text style={{ fontSize: 14, color: theme.colors.background }}>

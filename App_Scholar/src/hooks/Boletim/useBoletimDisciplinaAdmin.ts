@@ -24,7 +24,7 @@ export function useBoletimDisciplinaAdmin() {
     useCallback(
       async (alunoId: string) => {
         setLoading(true);
-
+        
         try {
           const response =
             await BoletimService.buscarTodas(

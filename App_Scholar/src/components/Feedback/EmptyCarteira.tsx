@@ -27,7 +27,7 @@ export function EmptyCarteira({
         alignItems: 'center',
         justifyContent: 'center',
         opacity: 0.9,
-         marginTop: -10, 
+         marginTop: 10, 
       }}
     >
       <MaterialCommunityIcons

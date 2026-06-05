@@ -7,6 +7,7 @@ const ENDPOINT = '/boletins';
 
 export const BoletimService = {
   async buscarTodas(filtro?: BoletimFiltro): Promise<Boletim[]> {
+    console.log("Buscando boletins com filtro:", filtro);
     const response = await api.get<Boletim[]>(ENDPOINT, { params: filtro});
     console.log("Resposta do servidor:", response.data);
     return response.data;

@@ -24,8 +24,7 @@ export const CardBoletim = ({
     EmAndamento: 'Em andamento',
     Aprovado: 'Aprovado',
     Reprovado: 'Reprovado',
-    EmRecuperacao:
-      'Em recuperação',
+    EmRecuperacao: 'Em recuperação',
     Trancado: 'Trancado',
   };
 
@@ -37,7 +36,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.success,
-
           bg: `${theme.colors.success}20`,
         };
 
@@ -45,7 +43,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.error,
-
           bg: `${theme.colors.error}20`,
         };
 
@@ -53,7 +50,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.warning,
-
           bg: `${theme.colors.warning}20`,
         };
 
@@ -61,7 +57,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.primary,
-
           bg: `${theme.colors.primary}20`,
         };
 
@@ -69,7 +64,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.destaque,
-
           bg: `${theme.colors.destaque}20`,
         };
 
@@ -77,7 +71,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.opaco,
-
           bg: `${theme.colors.opaco}20`,
         };
 
@@ -85,7 +78,6 @@ export const CardBoletim = ({
         return {
           color:
             theme.colors.text,
-
           bg:
             theme.colors.backgroundStatus,
         };
@@ -96,8 +88,11 @@ export const CardBoletim = ({
     item.boletimSituacao || '',
   );
 
-  const progress =
-    (item.boletimMedia || 0) / 10;
+  const progress = Math.min(
+    ((item.boletimMedia || 0) / 10) *
+      100,
+    100,
+  );
 
   return (
     <View style={styles.card}>
@@ -135,6 +130,48 @@ export const CardBoletim = ({
         </View>
       </View>
 
+      <View style={styles.infoContainer}>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoLabel}>
+            Professor
+          </Text>
+
+          <Text style={styles.infoValue}>
+            {item.disciplina?.professor
+              ?.professorNome ||
+              'Não informado'}
+          </Text>
+        </View>
+
+        <View style={styles.infoItem}>
+          <Text style={styles.infoLabel}>
+            Semestre
+          </Text>
+
+          <Text style={styles.infoValue}>
+            {
+              item.disciplina
+                .disciplinaSemestre
+            }
+            º
+          </Text>
+        </View>
+
+        <View style={styles.infoItem}>
+          <Text style={styles.infoLabel}>
+            Carga Horária
+          </Text>
+
+          <Text style={styles.infoValue}>
+            {
+              item.disciplina
+                .disciplinaCargaHoraria
+            }
+            h
+          </Text>
+        </View>
+      </View>
+
       <View style={styles.row}>
         <NotaBox
           label="Nota 1"
@@ -158,14 +195,31 @@ export const CardBoletim = ({
         />
       </View>
 
+      <View
+        style={styles.progressHeader}
+      >
+        <Text style={styles.progressText}>
+          Desempenho
+        </Text>
+
+        <Text
+          style={[
+            styles.progressPercent,
+            {
+              color: config.color,
+            },
+          ]}
+        >
+          {progress.toFixed(0)}%
+        </Text>
+      </View>
+
       <View style={styles.progressBg}>
         <View
           style={[
             styles.progressFill,
             {
-              width: `${
-                progress * 100
-              }%`,
+              width: `${progress}%`,
               backgroundColor:
                 config.color,
             },
