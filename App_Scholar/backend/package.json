@@ -2,7 +2,8 @@
   "name": "app-scholar-backend",
   "scripts": {
     "dev": "nodemon server.ts",
-    "start": "ts-node server.ts"
+    "start": "ts-node server.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
