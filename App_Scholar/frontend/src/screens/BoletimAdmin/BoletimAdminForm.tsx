@@ -1,0 +1,117 @@
+import { TypeMessage } from "../../types/Outros/messageType";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Controller } from "react-hook-form";
+import { Text, View } from "react-native";
+
+import { Button } from "../../components/Form/Button";
+import { Form } from "../../components/Form/Form";
+import { InputField } from "../../components/Form/InputField";
+import { Row } from "../../components/Form/Row";
+import { useBoletimAdminForm } from "../../hooks/Boletim/useBoletimAdminForm";
+import { useMensagem } from "../../hooks/Outros/useMensagem";
+
+import { useTheme } from "../../contexts/Theme/themeContext";
+import { RootStackParamList } from "../../navigation/types";
+import { BoletimFormData } from "../../schemas/boletim.schema";
+import { navigateWithDelay } from "../../utils/navigateWithDelay";
+type Props = NativeStackScreenProps<RootStackParamList, "BoletimAdminForm">;
+
+export function BoletimAdminForm({ route, navigation }: Props) {
+  const { mode, alunoId, disciplinaId, boletimId, disciplinaNome } =
+    route.params;
+  const showMessage = useMensagem();
+  const { theme } = useTheme();
+
+  const { control, errors, media, screen, handleSubmit, saveAll } =
+    useBoletimAdminForm(mode, boletimId, disciplinaId, alunoId);
+
+  const onSubmit = async (data: BoletimFormData) => {
+    try {
+      await saveAll(data);
+
+      const acao = mode === "create" ? "lançado" : "atualizado";
+
+      showMessage(`Boletim ${acao} com sucesso.`, TypeMessage.success);
+
+      await navigateWithDelay(() => navigation.goBack());
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message || "Erro ao salvar os dados do boletim.";
+
+      showMessage(msg, TypeMessage.error);
+    }
+  };
+
+  return (
+    <Form title={disciplinaNome || "Boletim"}>
+      <Row>
+        <View style={{ flex: 1 }}>
+          <Controller
+            control={control}
+            name="boletimNota1"
+            render={({ field }) => (
+              <InputField
+                label="Nota 1"
+                value={field.value?.toString()}
+                onChangeText={field.onChange}
+                keyboardType="numeric"
+                editable={!screen.readOnly}
+                error={errors.boletimNota1?.message}
+              />
+            )}
+          />
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Controller
+            control={control}
+            name="boletimNota2"
+            render={({ field }) => (
+              <InputField
+                label="Nota 2"
+                value={field.value?.toString()}
+                onChangeText={field.onChange}
+                keyboardType="numeric"
+                editable={!screen.readOnly}
+                error={errors.boletimNota2?.message}
+              />
+            )}
+          />
+        </View>
+      </Row>
+
+      <View
+        style={{
+          marginTop: 20,
+          padding: 16,
+          borderRadius: 12,
+          alignItems: "center",
+          backgroundColor: theme.colors.primary,
+        }}
+      >
+        <Text style={{ fontSize: 14, color: theme.colors.background }}>
+          Média
+        </Text>
+
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: "800",
+            color: theme.colors.background,
+          }}
+        >
+          {media.toFixed(1)}
+        </Text>
+      </View>
+
+      {!screen.isView && (
+        <Button
+          label={mode === "create" ? "Salvar notas" : "Atualizar notas"}
+          onPress={handleSubmit(onSubmit)}
+          disabled={screen.loading}
+          marginTop={24}
+        />
+      )}
+    </Form>
+  );
+}

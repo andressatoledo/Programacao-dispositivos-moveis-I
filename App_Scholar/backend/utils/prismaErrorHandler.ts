@@ -1,4 +1,8 @@
 import { Prisma } from "@prisma/client";
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientValidationError,
+} from "@prisma/client/runtime/library";
 
 const fieldLabels: Record<string, string> = {
   alunoMatricula: "Matrícula",
@@ -14,8 +18,8 @@ function getFieldLabel(field: string): string {
 
 export function handlePrismaError(error: unknown) {
 
-  // 🔴 Erros conhecidos do Prisma
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+
+  if (error instanceof PrismaClientKnownRequestError) {
 
     switch (error.code) {
 
@@ -50,15 +54,15 @@ export function handlePrismaError(error: unknown) {
     }
   }
 
-  // 🟠 Erros de validação do Prisma
-  if (error instanceof Prisma.PrismaClientValidationError) {
+
+  if (error instanceof PrismaClientValidationError) {
     return {
       status: 400,
       message: "Dados inválidos enviados",
     };
   }
 
-  // 🔵 Erros desconhecidos
+
   return {
     status: 500,
     message: "Erro interno do servidor",
