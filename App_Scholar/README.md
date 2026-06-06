@@ -110,7 +110,7 @@ npm start
 
 No frontend, certifique-se de configurar a variável da API com a URL correta de deploy para consumo dos serviços:
 ```typescript
-export const API_URL = "[https://seu-backend.onrender.com](https://seu-backend.onrender.com)";
+export const API_URL = "https://seu-backend.onrender.com";
 ```
 
 ---
@@ -121,6 +121,6 @@ Para facilitar a avaliação acadêmica e os testes de autenticação, utilize a
 
 | Perfil | Email | Senha |
 | :--- | :--- | :--- |
-| 🎓 **Aluno** | `aluno@teste.com` | `123456` |
-| 👨‍🏫 **Professor** | `professor@teste.com` | `123456` |
-| 👑 **Admin** | `admin@teste.com` | `123456` |
+| 🎓 **Aluno** | `mariana@aluno.appscholar.com` | `123456` |
+| 👨‍🏫 **Professor** | `fernanda@appscholar.com` | `123456` |
+| 👑 **Admin** | `admin@appscholar.com` | `123456` |
