@@ -1,50 +1,126 @@
-# Welcome to your Expo app 👋
+# 📚 App Scholar
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Sistema acadêmico mobile completo para gestão de alunos, professores, disciplinas e boletins, desenvolvido com React Native (Expo) e backend Node.js com Prisma + Supabase.
 
-## Get started
+> **Projeto Acadêmico:** Programação de dispositivos móveis - 4º Semestre
+> **Desenvolvido por:** Andressa Stéphane Toledo da Silva
 
-1. Install dependencies
+## 🚀 Demonstração
+*https://youtu.be/UUNXfWb3yjQ*
 
-   ```bash
-   npm install
-   ```
+## ✨ Visão Geral
 
-2. Start the app
+O App Scholar é uma aplicação mobile full-stack voltada para o ambiente acadêmico, permitindo gerenciamento de usuários, autenticação segura e organização de disciplinas.
 
-   ```bash
-   npx expo start
-   ```
+O sistema foi projetado com foco em:
+* **Arquitetura moderna:** Frontend e backend totalmente desacoplados.
+* **Escalabilidade:** Estrutura pronta para a adição de novas funcionalidades.
+* **Persistência segura de dados:** Utilização de banco de dados relacional em nuvem.
+* **Experiência mobile fluida:** Interfaces limpas e responsivas.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🧰 Stack Tecnológica
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 📱 Mobile (Frontend)
+* **React Native** (Expo SDK 54)
+* **Expo Router**
+* **TypeScript**
+* **Axios** (Integração de serviços reais, sem dados mockados)
+* **React Hook Form + Zod**
+* **AsyncStorage**
+* **React Navigation**
 
-## Get a fresh project
+### ⚙️ Backend (API)
+* **Node.js**
+* **Express**
+* **Prisma ORM**
+* **PostgreSQL** (Supabase)
+* **JWT Authentication**
+* **bcrypt**
 
-When you're ready, run:
+### ☁️ Infraestrutura
+* **Render** (Backend Deploy)
+* **Supabase** (Database)
+* **EAS Build** (APK Android)
 
+---
+
+## 🏗️ Arquitetura
+
+```text
+Frontend (Expo)  →  API (Render)  →  PostgreSQL (Supabase)
+      ↑                  ↓
+AsyncStorage         JWT Auth
+
+## ⚙️ Como rodar localmente
+
+### 📱 Frontend (Expo)
+
+Clone o repositório:
 ```bash
-npm run reset-project
+git clone [https://github.com/seu-usuario/app-scholar.git](https://github.com/seu-usuario/app-scholar.git)
+cd App_Scholar/frontend
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Instale as dependências:
+```bash
+npm install
+```
 
-## Learn more
+Inicie o projeto:
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 🌐 Backend (API)
 
-## Join the community
+Acesse o diretório do backend:
+```bash
+cd backend
+```
 
-Join our community of developers creating universal apps.
+Instale as dependências:
+```bash
+npm install
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Configure as variáveis de ambiente criando um arquivo `.env` na raiz do backend:
+```env
+DATABASE_URL="sua_url_supabase"
+JWT_SECRET="sua_chave_secreta"
+```
+
+Rode o servidor em modo de desenvolvimento:
+```bash
+npm run dev
+```
+
+Para gerar o build de produção:
+```bash
+npm run build
+npm start
+```
+
+---
+
+### 🔗 Configuração do Frontend
+
+No frontend, certifique-se de configurar a variável da API com a URL correta de deploy para consumo dos serviços:
+```typescript
+export const API_URL = "https://seu-backend.onrender.com";
+```
+
+---
+
+### 👤 Usuários de Teste
+
+Para facilitar a avaliação acadêmica e os testes de autenticação, utilize as credenciais pré-configuradas:
+
+| Perfil | Email | Senha |
+| :--- | :--- | :--- |
+| 🎓 **Aluno** | `mariana@aluno.appscholar.com` | `123456` |
+| 👨‍🏫 **Professor** | `fernanda@appscholar.com` | `123456` |
+| 👑 **Admin** | `admin@appscholar.com` | `123456` |
