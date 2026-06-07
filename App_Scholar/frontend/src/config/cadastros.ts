@@ -11,14 +11,6 @@ export const cadastrosConfig = [
     roles: ["admin", "professor"] as UserRole[],
   },
 
-   {
-    icon: "account-group",
-    title: "Progressão academica",
-    subtitle: "Determinar alunos que avançaram de semestre",
-    routeName: "SemestreForm",
-    roles: ["admin"] as UserRole[],
-  },
-
   {
     icon: "file-document-edit",
     title: "Boletins",
@@ -52,6 +44,13 @@ export const cadastrosConfig = [
     title: "Professores",
     subtitle: "Professores da instituição",
     routeName: "Professor",
+    roles: ["admin"] as UserRole[],
+  },
+  {
+    icon: "account-group",
+    title: "Progressão academica",
+    subtitle: "Determinar alunos que avançaram de semestre",
+    routeName: "SemestreForm",
     roles: ["admin"] as UserRole[],
   },
 ] as const satisfies ReadonlyArray<{

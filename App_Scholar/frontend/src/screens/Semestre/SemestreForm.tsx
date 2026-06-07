@@ -1,59 +1,55 @@
-import React, { useState } from "react";
-
-import {
-  Alert,
-  View,
-  Text,
-} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Text } from "react-native";
 
 import { Button } from "../../components/Form/Button";
+import { Form } from "../../components/Form/Form";
+
+import { useMensagem } from "../../hooks/Outros/useMensagem";
+
+import { TypeMessage } from "../../types/Outros/messageType";
+
+import { getErrorMessage } from "../../utils/getErrorMessage";
+import { navigateWithDelay } from "../../utils/navigateWithDelay";
+
+import { RootStackParamList } from "../../navigation/types";
 
 import { SemestreService } from "../../services/semestreService";
-import { Form } from "@/src/components/Form/Form";
 
-export function SemestreForm() {
-  const [loading, setLoading] =
-    useState(false);
+type Props = NativeStackScreenProps<RootStackParamList, "SemestreForm">;
 
-  async function processar() {
+export function SemestreForm({ navigation }: Props) {
+  const showMessage = useMensagem();
+
+  async function handleProcessar() {
     try {
-      setLoading(true);
+      const resultado = await SemestreService.processarSemestres();
 
-      const resultado =
-        await SemestreService.processarSemestres();
+      showMessage(
+        `${resultado.atualizados} alunos foram avançados para o próximo semestre.`,
+        TypeMessage.success,
+      );
 
-      Alert.alert(
-        "Sucesso",
-        `${resultado.atualizados} alunos atualizados.`,
-      );
-    } catch {
-      Alert.alert(
-        "Erro",
-        "Não foi possível processar os semestres.",
-      );
-    } finally {
-      setLoading(false);
+      await navigateWithDelay(() => navigation.goBack());
+    } catch (error) {
+      showMessage(getErrorMessage(error), TypeMessage.error);
     }
   }
 
   return (
     <Form>
-    
       <Text
         style={{
-          marginBottom: 10,
+          fontSize: 16,
+          lineHeight: 24,
+          marginBottom: 20,
           color: "#FFFFFF",
         }}
       >
-        Esta rotina irá avançar os
-        alunos para o próximo
-        semestre.
+        Esta rotina irá atualizar o semestre atual dos alunos aptos para
+        progressão acadêmica.
       </Text>
 
-      <Button
-        label="Processar semestre"
-        onPress={processar}
-      />
+      <Button label="Processar semestre" onPress={handleProcessar} />
     </Form>
   );
 }
