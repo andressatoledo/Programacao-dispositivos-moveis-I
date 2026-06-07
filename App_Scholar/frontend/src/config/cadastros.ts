@@ -1,5 +1,5 @@
-import { RootStackParamList } from "@/frontend/src/navigation/types";
-import { UserRole } from "@/frontend/src/types/Auth/usuario";
+import { RootStackParamList } from "../../src/navigation/types";
+import { UserRole } from "../../src/types/Auth/usuario";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const cadastrosConfig = [
@@ -9,6 +9,14 @@ export const cadastrosConfig = [
     subtitle: "Alunos matriculados",
     routeName: "Aluno",
     roles: ["admin", "professor"] as UserRole[],
+  },
+
+   {
+    icon: "account-group",
+    title: "Progressão academica",
+    subtitle: "Determinar alunos que avançaram de semestre",
+    routeName: "SemestreForm",
+    roles: ["admin"] as UserRole[],
   },
 
   {

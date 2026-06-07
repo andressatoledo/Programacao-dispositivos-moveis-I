@@ -65,4 +65,5 @@ export type RootStackParamList = {
   };
   MudarSenha: undefined;
 
+  SemestreForm: undefined;
 };

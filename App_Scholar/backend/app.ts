@@ -11,6 +11,7 @@ import boletimRoutes from './routes/boletimRoutes';
 import authRoutes from './routes/authRoutes';
 import usuarioRoutes from './routes/usuarioRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
+import semestreRoutes from './routes/semestreRoutes';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/disciplinas', disciplinaRoutes);
 app.use('/api/boletins', boletimRoutes);
 app.use('/api/auth', authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/semestres", semestreRoutes);
 app.use(errorMiddleware);
 
 
