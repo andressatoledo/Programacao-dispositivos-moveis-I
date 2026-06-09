@@ -129,7 +129,7 @@ export class AuthController {
    * MUDAR SENHA
    */
   static async mudarSenha(req: AuthRequest, res: Response) {
-    console.log("user no mudar senha", req.user);
+  
     const usuarioId = req.user?.sub;
     console.log(req.body);
     const { senhaAtual, novaSenha } = req.body;

@@ -6,7 +6,7 @@ Sistema acadêmico mobile completo para gestão de alunos, professores, discipli
 > **Desenvolvido por:** Andressa Stéphane Toledo da Silva
 
 ## 🚀 Demonstração
-*https://youtu.be/UUNXfWb3yjQ*
+*https://youtu.be/82U77nWoEbw*
 
 ## ✨ Visão Geral
 
