@@ -3,6 +3,15 @@ import { UserRole } from "../../src/types/Auth/usuario";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const cadastrosConfig = [
+
+  {
+    icon: "alert-circle",
+    title: "Avisos",
+    subtitle: "Avisos importantes",
+    routeName: "Aviso",
+    roles: ["admin", "professor","aluno"] as UserRole[],
+  },
+
   {
     icon: "account-group",
     title: "Alunos",

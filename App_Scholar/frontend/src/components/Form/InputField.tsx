@@ -25,6 +25,8 @@ interface Props {
   onChangeText?: (text: string) => void;
   marginBottom?: number;
   error?: string;
+  multiline?: boolean;
+  numberOfLines?: number;
 }
 
 export function InputField({
@@ -42,6 +44,8 @@ export function InputField({
   keyboardType = 'default',
   error,
   marginBottom,
+  multiline = false,
+  numberOfLines = 1,
 }: Props) {
   const { theme } = useTheme();
   const isPressable = !!onPress && !editable;
@@ -87,6 +91,8 @@ export function InputField({
         onChangeText={handleChange}
         placeholderTextColor={theme.colors.opaco}
         secureTextEntry={secureTextEntry}
+         multiline={multiline}
+        numberOfLines={numberOfLines}
         style={{
           flex: 1,
           paddingVertical: 12,

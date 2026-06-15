@@ -66,4 +66,8 @@ export type RootStackParamList = {
   MudarSenha: undefined;
 
   SemestreForm: undefined;
+
+  Aviso: undefined;
+
+  AvisoForm: {mode: Mode, avisoId?:string};
 };

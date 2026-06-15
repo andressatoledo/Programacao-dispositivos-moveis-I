@@ -21,6 +21,22 @@ export const DisciplinaService = {
     return response.data;
   },
 
+  async buscarComboPorCurso(
+  cursoId: string,
+): Promise<ComboOption[]> {
+  const response =
+    await api.get<ComboOption[]>(
+      `${ENDPOINT}/combo`,
+      {
+        params: {
+          cursoId,
+        },
+      },
+    );
+
+  return response.data;
+},
+
   async criar(dados: Disciplina): Promise<Disciplina> {
     const response = await api.post<Disciplina>(ENDPOINT, dados);
     return response.data;

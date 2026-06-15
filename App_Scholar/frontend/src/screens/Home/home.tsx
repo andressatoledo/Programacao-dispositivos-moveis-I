@@ -10,12 +10,18 @@ import { Form } from "../../components/Form/Form";
 import { cadastrosConfig } from "../../config/cadastros";
 import { dashboardResumoConfig } from "../../config/dashboardResumo";
 import { useAuth } from "../../hooks/Auth/useAuth";
+import { useUltimoAviso } from "../../hooks/Aviso/useUltimoAviso";
+import { CardAvisoHome } from "../../components/CardAviso/CardAvisoHome";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function Home({ navigation }: Props) {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const {
+  aviso,
+  marcarComoVisualizado,
+} = useUltimoAviso();
   const resumo = useDashboardResumo();
 
   if (!user?.role) return null;
@@ -36,7 +42,25 @@ export default function Home({ navigation }: Props) {
   return (
     <Form>
       <DashboardHeader navigation={navigation} />
+      {aviso && (
+  <CardAvisoHome
+  aviso={aviso}
+  onPress={async () => {
+    await marcarComoVisualizado(
+      aviso.avisoId as string,
+    );
 
+    navigation.navigate(
+      "AvisoForm",
+      {
+        mode: "view",
+        avisoId:
+          aviso.avisoId,
+      },
+    );
+  }}
+/>
+)}
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
         {resumoFiltrado.map((item) => (
           <ResumoCard key={item.resumoKey} {...item} />

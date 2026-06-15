@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum CursoPeriodo {
@@ -49,6 +50,7 @@ model Aluno {
   usuario Usuario? @relation("UsuarioAluno")
 
   alunoCreatedAt DateTime @default(now())
+  visualizacoesAvisos AvisoVisualizacao[]
 }
 
 model Professor {
@@ -73,6 +75,8 @@ model Curso {
 
   alunos       Aluno[]
   disciplinas  Disciplina[]
+
+  avisos Aviso[]
 }
 
 model Disciplina {
@@ -88,6 +92,7 @@ model Disciplina {
   cursoId String
   curso   Curso @relation(fields: [cursoId], references: [cursoId])
 
+  avisos Aviso[]
   boletins Boletim[]
 }
 
@@ -126,4 +131,42 @@ model Usuario {
 
   usuarioCreatedAt DateTime @default(now())
   usuarioUpdatedAt DateTime @updatedAt
+
+  avisosCriados Aviso[]
+}
+
+model Aviso {
+  avisoId String @id @default(uuid())
+
+  avisoTitulo String
+  avisoMensagem String
+
+  avisoAtivo Boolean @default(true)
+
+  criadoPorId String
+  criadoPor Usuario @relation(fields: [criadoPorId], references: [usuarioId])
+
+  cursoId String?
+  curso Curso? @relation(fields: [cursoId], references: [cursoId])
+
+  disciplinaId String?
+  disciplina Disciplina? @relation(fields: [disciplinaId], references: [disciplinaId])
+
+  visualizacoes AvisoVisualizacao[]
+
+  avisoCreatedAt DateTime @default(now())
+}
+
+model AvisoVisualizacao {
+  avisoVisualizacaoId String @id @default(uuid())
+
+  avisoId String
+  aviso Aviso @relation(fields: [avisoId], references: [avisoId])
+
+  alunoId String
+  aluno Aluno @relation(fields: [alunoId], references: [alunoId])
+
+  visualizadoEm DateTime @default(now())
+
+  @@unique([avisoId, alunoId])
 }

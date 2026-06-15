@@ -12,13 +12,14 @@ import authRoutes from './routes/authRoutes';
 import usuarioRoutes from './routes/usuarioRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import semestreRoutes from './routes/semestreRoutes';
+import avisoRoutes from './routes/avisoRoutes';
 
 const app = express();
 
 app.use(cors());
 
 app.use(express.json());
-
+app.use('/api/avisos', avisoRoutes);
 app.use('/api/alunos', alunoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/professores', professorRoutes);
